@@ -22,3 +22,14 @@
 ## *Why is this project of interest to you?*
 I have been playing this game since my junior high school, and 
 I now want to design this game from scratch on my own.
+
+## User stories
+- As a user, I want to be able to input the next direction the tiles move in.
+- As a user, I want to be able to see how the tiles are distributed after each move.
+- As a user, I want to be able to save the game progress anytime after I started a game 
+and exit the game. 
+- As a user, I want to be able to choose whether to load the game progress or start a new game and erase
+ saved progress.
+- As a user, I want to be able to restart a new game in the middle of a game.
+- As a user, I want to be able to choose whether to save the score I get in this game to history ranking list.
+- As a user, I want to be able to access the ranking list.
