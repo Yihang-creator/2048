@@ -1,11 +1,22 @@
-# My Personal Project
+# My Personal Project --- 2048
 
-## A subtitle
+## *What will the application do?*
 
-A *bulleted* list:
-- item 1
-- item 2
-- item 3
 
-An example of text with **bold** and *italic* fonts.  Note that the IntelliJ markdown previewer doesn't seem to render 
-the bold and italic fonts correctly but they will appear correctly on GitHub.
+- play the 2048 game using keyboard upwards arrow(or W), downwards arrow(or S),
+ leftwards arrow(or A) and rightwards arrow(or D)
+
+- record the ***current score***
+- record the ***highest score ever***
+
+
+
+## *Who will use it?*
+* anyone who wants play the game
+
+
+
+
+## *Why is this project of interest to you?*
+I have been playing this game since my junior high school, and 
+I now want to design this game from scratch on my own.
