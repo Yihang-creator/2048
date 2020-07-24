@@ -16,15 +16,30 @@ class GridTest {
     }
 
     @Test
+    public void gridTest() {
+        assertEquals(0,grid.getScore());
+        for (int i = 0; i < 4; i++) {
+            assertArrayEquals(new int[]{0, 0, 0, 0},grid.getCol(i));
+            assertArrayEquals(new int[]{0, 0, 0, 0},grid.getRow(i));
+        }
+    }
+
+    @Test
     public void ableToMoveTest() {
         grid.setRow(new int[]{64,0,0,0},0);
         grid.setRow(new int[]{128,64,8,4},1);
         grid.setRow(new int[]{256,128,64,8},2);
         grid.setRow(new int[]{512,256,128,64},3);
-        assertFalse(grid.ableToMove("left"));
-        assertTrue(grid.ableToMove("right"));
-        assertFalse(grid.ableToMove("down"));
-        assertTrue(grid.ableToMove("up"));
+        assertFalse(grid.ableToMoveLeft());
+        assertTrue(grid.ableToMoveRight());
+        assertFalse(grid.ableToMoveDown());
+        assertTrue(grid.ableToMoveUp());
+        Grid grid2 = new Grid();
+        grid2.setRow(new int[]{64,8,4,4},0);
+        grid2.setRow(new int[]{128,64,8,4},1);
+        grid2.setRow(new int[]{256,128,64,8},2);
+        grid2.setRow(new int[]{512,256,128,64},3);
+        assertTrue(grid2.ableToMoveLeft());
 
     }
 
@@ -40,34 +55,36 @@ class GridTest {
         grid2.setRow(new int[]{128,64,8,4},1);
         grid2.setRow(new int[]{256,128,64,8},2);
         grid2.setRow(new int[]{512,256,128,64},3);
-        assertFalse(grid.isOver());
-
-
+        assertFalse(grid2.isOver());
 
     }
 
     @Test
+    public void hasIdenticalTilesTest() {
+        assertTrue(grid.hasIdenticalTiles(new int[]{64,4,4,4}));
+        assertFalse(grid.hasIdenticalTiles(new int[]{64,4,0,0}));
+        assertTrue(grid.hasIdenticalTiles(new int[]{0,4,4,0}));
+        assertTrue(grid.hasIdenticalTiles(new int[]{64,64,0,0}));
+        assertFalse(grid.hasIdenticalTiles(new int[]{128,64,4,8}));
+
+    }
+
+
+        @Test
     public void matrixRotationClockwise90DegreesTest() {
         grid.setRow(new int[]{64,8,4,2},0);
         grid.setRow(new int[]{128,64,8,4},1);
         grid.setRow(new int[]{256,128,64,8},2);
         grid.setRow(new int[]{512,256,128,64},3);
         grid.matrixRotationClockwise90Degrees();
-        assertEquals(new int[]{512,256,128,64},grid.getRow(0));
-        assertEquals(new int[]{256,128,64,8},grid.getRow(0));
-        assertEquals(new int[]{128,64,8,4},grid.getRow(0));
-        assertEquals(new int[]{64,8,4,2},grid.getRow(0));
+        assertArrayEquals(new int[]{512,256,128,64},grid.getRow(0));
+        assertArrayEquals(new int[]{256,128,64,8},grid.getRow(1));
+        assertArrayEquals(new int[]{128,64,8,4},grid.getRow(2));
+        assertArrayEquals(new int[]{64,8,4,2},grid.getRow(3));
 
 
     }
-    @Test
-    public void gridTest() {
-        assertEquals(0,grid.getScore());
-        for (int i = 0; i < 4; i++) {
-            assertEquals(new int[]{0, 0, 0, 0},grid.getCol(i));
-            assertEquals(new int[]{0, 0, 0, 0},grid.getRow(i));
-        }
-    }
+
 
     @Test
     public void moveAndMergeUpTest() {
@@ -75,11 +92,11 @@ class GridTest {
             grid.setCol(new int[]{2,2,2,0},i);
         }
         grid.setCol(new int[]{0,0,0,0},3);
-        grid.moveAndMerge("up");
-        assertEquals(new int[]{4,4,4,0},grid.getRow(0));
-        assertEquals(new int[]{2,2,2,0},grid.getRow(1));
-        assertEquals(new int[]{0,0,0,0},grid.getRow(2));
-        assertEquals(new int[]{0,0,0,0},grid.getRow(3));
+        grid.moveAndMergeUp();
+        assertArrayEquals(new int[]{4,4,4,0},grid.getRow(0));
+        assertArrayEquals(new int[]{2,2,2,0},grid.getRow(1));
+        assertArrayEquals(new int[]{0,0,0,0},grid.getRow(2));
+        assertArrayEquals(new int[]{0,0,0,0},grid.getRow(3));
 
 
     }
@@ -89,11 +106,11 @@ class GridTest {
             grid.setCol(new int[]{2,2,2,0},i);
         }
         grid.setCol(new int[]{0,0,0,0},3);
-        grid.moveAndMerge("down");
-        assertEquals(new int[]{0,0,0,0},grid.getRow(0));
-        assertEquals(new int[]{0,0,0,0},grid.getRow(1));
-        assertEquals(new int[]{2,2,2,0},grid.getRow(2));
-        assertEquals(new int[]{4,4,4,0},grid.getRow(3));
+        grid.moveAndMergeDown();
+        assertArrayEquals(new int[]{0,0,0,0},grid.getRow(0));
+        assertArrayEquals(new int[]{0,0,0,0},grid.getRow(1));
+        assertArrayEquals(new int[]{2,2,2,0},grid.getRow(2));
+        assertArrayEquals(new int[]{4,4,4,0},grid.getRow(3));
 
 
 
@@ -104,11 +121,11 @@ class GridTest {
             grid.setCol(new int[]{2,2,2,0},i);
         }
         grid.setCol(new int[]{0,0,0,0},3);
-        grid.moveAndMerge("right");
-        assertEquals(new int[]{4,2,0,0},grid.getRow(0));
-        assertEquals(new int[]{4,2,0,0},grid.getRow(1));
-        assertEquals(new int[]{4,2,0,0},grid.getRow(2));
-        assertEquals(new int[]{0,0,0,0},grid.getRow(3));
+        grid.moveAndMergeRight();
+        assertArrayEquals(new int[]{4,2,0,0},grid.getRow(0));
+        assertArrayEquals(new int[]{4,2,0,0},grid.getRow(1));
+        assertArrayEquals(new int[]{4,2,0,0},grid.getRow(2));
+        assertArrayEquals(new int[]{0,0,0,0},grid.getRow(3));
 
 
 
@@ -119,11 +136,11 @@ class GridTest {
             grid.setCol(new int[]{2,2,2,0},i);
         }
         grid.setCol(new int[]{0,0,0,0},3);
-        grid.moveAndMerge("left");
-        assertEquals(new int[]{0,0,2,4},grid.getRow(0));
-        assertEquals(new int[]{0,0,2,4},grid.getRow(1));
-        assertEquals(new int[]{0,0,2,4},grid.getRow(2));
-        assertEquals(new int[]{0,0,0,0},grid.getRow(3));
+        grid.moveAndMergeLeft();
+        assertArrayEquals(new int[]{0,0,2,4},grid.getRow(0));
+        assertArrayEquals(new int[]{0,0,2,4},grid.getRow(1));
+        assertArrayEquals(new int[]{0,0,2,4},grid.getRow(2));
+        assertArrayEquals(new int[]{0,0,0,0},grid.getRow(3));
 
 
 
@@ -143,15 +160,15 @@ class GridTest {
             if (grid.getRow(0)[i] == 2 || grid.getRow(0)[i] == 4) {
                 addedNum++;
             }
-            if (grid.getCol(3)[i] == 2 || grid.getRow(3)[i] == 4) {
+            if (grid.getCol(3)[i] == 2 || grid.getCol(3)[i] == 4) {
                 addedNum++;
             }
-            if (grid.getRow(1)[2] == 2 || grid.getRow(1)[2] == 4) {
-                addedNum++;
-            }
-            if (grid.getRow(1)[3] == 2 || grid.getRow(1)[3] == 4) {
-                addedNum++;
-            }
+        }
+        if (grid.getRow(1)[2] == 2 || grid.getRow(1)[2] == 4) {
+            addedNum++;
+        }
+        if (grid.getRow(1)[3] == 2 || grid.getRow(1)[3] == 4) {
+            addedNum++;
         }
         assertEquals(1,addedNum);
         //check whether original tiles are changed
@@ -176,7 +193,7 @@ class GridTest {
 
 
     @Test
-    public void addScoresTest(int addedScore) {
+    public void addScoresTest() {
         grid.addScores(12);
         assertEquals(12,grid.getScore());
         grid.addScores(0);

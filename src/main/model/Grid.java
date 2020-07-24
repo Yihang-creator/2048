@@ -4,27 +4,116 @@ public class Grid {
     private int[][] matrix = new int[4][4];
     private int score;
     // after each move, only tiles numbered 2 or 4 will be added to the grid
-    private int[] arrayOfNumberAppear = {2,4};
+    private int[] arrayOfNumberAppear = {2, 4};
 
     //EFFECTS: construct an empty 4x4 grid
-    public Grid() {}
-
-    //REQUIRES: command is one of "up","down","left" or "right".
-    //EFFECTS: determine whether the tiles in the grid can move in the command direction
-    public boolean ableToMove(String command) {
-        return true; //stub
+    public Grid() {
     }
+
+
+    //EFFECTS: return true when the tiles in the grid can move in the left direction and false otherwise
+    public boolean ableToMoveLeft() {
+        for (int i = 0; i < 4; i++) {         //determine whether there are neighbouring tiles with identical numbers
+            int[] row = getRow(i);
+            if (hasIdenticalTiles(row)) {
+                return true;
+            }
+        }
+        for (int i = 0; i < 4; i++) {         //determine whether there are empty grids in the leftmost three columnns
+            int[] row = getRow(i);            // that is between non-empty grids on the same row
+            for (int j = 3; j >= 0; j--) {
+                if (row[j] != 0) {
+                    for (int k = j; k >= 0; k--) {
+                        if (row[k] == 0) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    //EFFECTS: return true when the tiles in the grid can move in the right direction and false otherwise
+    public boolean ableToMoveRight() {
+        matrixRotationClockwise90Degrees();
+        matrixRotationClockwise90Degrees();
+        boolean able = ableToMoveLeft();
+        matrixRotationClockwise90Degrees();
+        matrixRotationClockwise90Degrees();
+        return able;
+    }
+
+    //EFFECTS: return true when the tiles in the grid can move in the up direction and false otherwise
+    public boolean ableToMoveUp() {
+        matrixRotationClockwise90Degrees();
+        matrixRotationClockwise90Degrees();
+        matrixRotationClockwise90Degrees();
+        boolean able = ableToMoveLeft();
+        matrixRotationClockwise90Degrees();
+        return able;
+    }
+
+    //EFFECTS: return true when the tiles in the grid can move in the down direction and false otherwise
+    public boolean ableToMoveDown() {
+        matrixRotationClockwise90Degrees();
+        boolean able = ableToMoveLeft();
+        matrixRotationClockwise90Degrees();
+        matrixRotationClockwise90Degrees();
+        matrixRotationClockwise90Degrees();
+        return able;
+
+    }
+
+    //EFFECTS: return true if the given array has neighbouring tiles with identical numbers (excluding 0)
+    public boolean hasIdenticalTiles(int[] array) {
+        int lastElement = -1;
+        for (int i = 0; i < array.length; i++) {
+            if (array[i] == lastElement && array[i] != 0) {
+                return true;
+            } else {
+                lastElement = array[i];
+            }
+        }
+        return false;
+    }
+
 
     //EFFECTS: determine whether the game is over.
-    //         The game is over when grid is full and no further move can be done
+    //         The game is over if no further move can be done
     public boolean isOver() {
-        return false; //stub
+        return !ableToMoveLeft() && !ableToMoveUp() && !ableToMoveRight() && !ableToMoveDown();
     }
 
-    //REQUIRES: command is one of "up","down","left" or "right".
+
     //MODIFIES: this
     //EFFECTS: move all the tiles in the given direction. Merge neighbouring tiles which have the same number.
-    public void moveAndMerge(String command) {
+    public void moveAndMergeLeft() {
+
+
+
+    }
+
+    //MODIFIES: this
+    //EFFECTS: move all the tiles in the given direction. Merge neighbouring tiles which have the same number.
+    public void moveAndMergeRight() {
+
+
+
+    }
+
+    //MODIFIES: this
+    //EFFECTS: move all the tiles in the given direction. Merge neighbouring tiles which have the same number.
+    public void moveAndMergeUp() {
+
+
+
+    }
+
+    //MODIFIES: this
+    //EFFECTS: move all the tiles in the given direction. Merge neighbouring tiles which have the same number.
+    public void moveAndMergeDown() {
+
 
 
     }
@@ -52,6 +141,7 @@ public class Grid {
     //MODIFIES: this
     //EFFECTS: addScore will be added to the total score
     public void addScores(int addScore) {
+        score = score + addScore;
 
     }
 
@@ -90,8 +180,6 @@ public class Grid {
             matrix[i][colNum] = col[i];
         }
     }
-
-
 
 
 }
