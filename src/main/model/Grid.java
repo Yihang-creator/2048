@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Random;
+
 public class Grid {
     private int[][] matrix = new int[4][4];
     private int score;
@@ -190,7 +192,33 @@ public class Grid {
     //EFFECTS: after each move, a new tile numbered 2 or 4 will be added to an empty grid.
     //         No existing tiles will be changed.
     public void addNewTile() {
+        Random random = new Random();
+        int tileNum = 1 + random.nextInt(getEmptyNum());
+        int currentEmptyNum = 0;
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (matrix[i][j] == 0) {
+                    currentEmptyNum++;
+                    if (currentEmptyNum == tileNum) {
+                        matrix[i][j] = arrayOfNumberAppear[random.nextInt(2)];
+                        break;
+                    }
+                }
+            }
+        }
+    }
 
+    //EFFECTS: return the number of empty grid in the matrix
+    public int getEmptyNum() {
+        int emptyNum = 0;
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (matrix[i][j] == 0) {
+                    emptyNum++;
+                }
+            }
+        }
+        return emptyNum;
     }
 
     //MODIFIES: this
