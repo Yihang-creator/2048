@@ -10,10 +10,35 @@ public class Grid {
     public Grid() {}
 
     //REQUIRES: command is one of "up","down","left" or "right".
+    //EFFECTS: determine whether the tiles in the grid can move in the command direction
+    public boolean ableToMove(String command) {
+        return true; //stub
+    }
+
+    //EFFECTS: determine whether the game is over.
+    //         The game is over when grid is full and no further move can be done
+    public boolean isOver() {
+        return false; //stub
+    }
+
+    //REQUIRES: command is one of "up","down","left" or "right".
     //MODIFIES: this
     //EFFECTS: move all the tiles in the given direction. Merge neighbouring tiles which have the same number.
     public void moveAndMerge(String command) {
 
+
+    }
+
+    //MODIFIES: this
+    //EFFECTS: rotate the matrix by 90 degrees ()
+    public void matrixRotationClockwise90Degrees() {
+        int[][] newMatrix = new int[4][4];
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                newMatrix[i][j] = matrix[3 - j][i];
+            }
+        }
+        matrix = newMatrix;
 
     }
 
@@ -25,10 +50,11 @@ public class Grid {
     }
 
     //MODIFIES: this
-    //EFFECTS: the number on newly merged tiles will be added to the score
-    public void addScores() {
+    //EFFECTS: addScore will be added to the total score
+    public void addScores(int addScore) {
 
     }
+
 
     //REQUIRES: 0 <= rowNum <=3
     //EFFECTS: return the row of the given index

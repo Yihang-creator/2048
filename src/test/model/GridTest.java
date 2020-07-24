@@ -16,6 +16,51 @@ class GridTest {
     }
 
     @Test
+    public void ableToMoveTest() {
+        grid.setRow(new int[]{64,0,0,0},0);
+        grid.setRow(new int[]{128,64,8,4},1);
+        grid.setRow(new int[]{256,128,64,8},2);
+        grid.setRow(new int[]{512,256,128,64},3);
+        assertFalse(grid.ableToMove("left"));
+        assertTrue(grid.ableToMove("right"));
+        assertFalse(grid.ableToMove("down"));
+        assertTrue(grid.ableToMove("up"));
+
+    }
+
+    @Test
+    public void isOverTest() {
+        Grid grid2 = new Grid();
+        grid.setRow(new int[]{64,8,4,2},0);
+        grid.setRow(new int[]{128,64,8,4},1);
+        grid.setRow(new int[]{256,128,64,8},2);
+        grid.setRow(new int[]{512,256,128,64},3);
+        assertTrue(grid.isOver());
+        grid2.setRow(new int[]{64,8,4,4},0);
+        grid2.setRow(new int[]{128,64,8,4},1);
+        grid2.setRow(new int[]{256,128,64,8},2);
+        grid2.setRow(new int[]{512,256,128,64},3);
+        assertFalse(grid.isOver());
+
+
+
+    }
+
+    @Test
+    public void matrixRotationClockwise90DegreesTest() {
+        grid.setRow(new int[]{64,8,4,2},0);
+        grid.setRow(new int[]{128,64,8,4},1);
+        grid.setRow(new int[]{256,128,64,8},2);
+        grid.setRow(new int[]{512,256,128,64},3);
+        grid.matrixRotationClockwise90Degrees();
+        assertEquals(new int[]{512,256,128,64},grid.getRow(0));
+        assertEquals(new int[]{256,128,64,8},grid.getRow(0));
+        assertEquals(new int[]{128,64,8,4},grid.getRow(0));
+        assertEquals(new int[]{64,8,4,2},grid.getRow(0));
+
+
+    }
+    @Test
     public void gridTest() {
         assertEquals(0,grid.getScore());
         for (int i = 0; i < 4; i++) {
@@ -129,11 +174,15 @@ class GridTest {
 
     }
 
-    //MODIFIES: this
-    //EFFECTS: the number on newly merged tiles will be added to the score
-    @Test
-    public void addScoresTest() {
 
+    @Test
+    public void addScoresTest(int addedScore) {
+        grid.addScores(12);
+        assertEquals(12,grid.getScore());
+        grid.addScores(0);
+        assertEquals(12,grid.getScore());
+        grid.addScores(512);
+        assertEquals(524,grid.getScore());
     }
 
 }
