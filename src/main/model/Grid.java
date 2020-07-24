@@ -87,35 +87,90 @@ public class Grid {
 
 
     //MODIFIES: this
-    //EFFECTS: move all the tiles in the given direction. Merge neighbouring tiles which have the same number.
+    //EFFECTS: move all the tiles in the left direction. Merge neighbouring tiles which have the same number.
     public void moveAndMergeLeft() {
+        if (ableToMoveLeft()) {
+            for (int i = 0; i < 4; i++) {
+                moveAndMergeLeftByRow(i);
 
-
-
+            }
+        }
     }
 
+
     //MODIFIES: this
-    //EFFECTS: move all the tiles in the given direction. Merge neighbouring tiles which have the same number.
+    //EFFECTS: move all the tiles in the right direction. Merge neighbouring tiles which have the same number.
     public void moveAndMergeRight() {
+        matrixRotationClockwise90Degrees();
+        matrixRotationClockwise90Degrees();
+        moveAndMergeLeft();
+        matrixRotationClockwise90Degrees();
+        matrixRotationClockwise90Degrees();
 
 
 
     }
 
     //MODIFIES: this
-    //EFFECTS: move all the tiles in the given direction. Merge neighbouring tiles which have the same number.
+    //EFFECTS: move all the tiles in the up direction. Merge neighbouring tiles which have the same number.
     public void moveAndMergeUp() {
+        matrixRotationClockwise90Degrees();
+        matrixRotationClockwise90Degrees();
+        matrixRotationClockwise90Degrees();
+        moveAndMergeLeft();
+        matrixRotationClockwise90Degrees();
 
 
 
     }
 
     //MODIFIES: this
-    //EFFECTS: move all the tiles in the given direction. Merge neighbouring tiles which have the same number.
+    //EFFECTS: move all the tiles in the down direction. Merge neighbouring tiles which have the same number.
     public void moveAndMergeDown() {
+        matrixRotationClockwise90Degrees();
+        moveAndMergeLeft();
+        matrixRotationClockwise90Degrees();
+        matrixRotationClockwise90Degrees();
+        matrixRotationClockwise90Degrees();
 
 
+    }
 
+    //MODIFIES: this
+    //EFFECTS: return the merged and moved row
+    public void moveAndMergeLeftByRow(int rowNum) {
+        int[] row = getRow(rowNum);
+        // put all the zeros on the right
+        row = putAllZerosOnRightSide(row);
+        // merge the same number
+        int lastElement = -1;
+        for (int i = 0; i < 4; i++) {
+            if (row[i] == lastElement) {
+                row[i - 1] = 2 * row[i];
+                row[i] = 0;
+                lastElement = 0;
+            } else {
+                lastElement = row[i];
+            }
+        }
+        // put all the zeros on the right
+        row = putAllZerosOnRightSide(row);
+        setRow(row,rowNum);
+    }
+
+    public int[] putAllZerosOnRightSide(int[] row) {
+        for (int i = 0; i < 4; i++) {
+            if (row[i] == 0) {
+                for (int j = i; j < 4; j++) {
+                    if (row[j] != 0) {
+                        row[i] = row[j];
+                        row[j] = 0;
+                        break;
+                    }
+                }
+            }
+        }
+        return row;
     }
 
     //MODIFIES: this

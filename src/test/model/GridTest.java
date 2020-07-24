@@ -122,10 +122,11 @@ class GridTest {
         }
         grid.setCol(new int[]{0,0,0,0},3);
         grid.moveAndMergeRight();
-        assertArrayEquals(new int[]{4,2,0,0},grid.getRow(0));
-        assertArrayEquals(new int[]{4,2,0,0},grid.getRow(1));
-        assertArrayEquals(new int[]{4,2,0,0},grid.getRow(2));
+        assertArrayEquals(new int[]{0,0,2,4},grid.getRow(0));
+        assertArrayEquals(new int[]{0,0,2,4},grid.getRow(1));
+        assertArrayEquals(new int[]{0,0,2,4},grid.getRow(2));
         assertArrayEquals(new int[]{0,0,0,0},grid.getRow(3));
+
 
 
 
@@ -137,12 +138,39 @@ class GridTest {
         }
         grid.setCol(new int[]{0,0,0,0},3);
         grid.moveAndMergeLeft();
-        assertArrayEquals(new int[]{0,0,2,4},grid.getRow(0));
-        assertArrayEquals(new int[]{0,0,2,4},grid.getRow(1));
-        assertArrayEquals(new int[]{0,0,2,4},grid.getRow(2));
+        assertArrayEquals(new int[]{4,2,0,0},grid.getRow(0));
+        assertArrayEquals(new int[]{4,2,0,0},grid.getRow(1));
+        assertArrayEquals(new int[]{4,2,0,0},grid.getRow(2));
         assertArrayEquals(new int[]{0,0,0,0},grid.getRow(3));
 
 
+
+
+    }
+
+    @Test
+    public void moveAndMergeLeftByRowTest() {
+        grid.setRow(new int[]{4,2,0,0},0);
+        grid.setRow(new int[]{8,4,0,2},1);
+        grid.setRow(new int[]{32,8,8,0},2);
+        grid.setRow(new int[]{256,256,4,0},3);
+        grid.moveAndMergeLeftByRow(0);
+        grid.moveAndMergeLeftByRow(1);
+        grid.moveAndMergeLeftByRow(2);
+        grid.moveAndMergeLeftByRow(3);
+        assertArrayEquals(new int[]{4,2,0,0},grid.getRow(0));
+        assertArrayEquals(new int[]{8,4,2,0},grid.getRow(1));
+        assertArrayEquals(new int[]{32,16,0,0},grid.getRow(2));
+        assertArrayEquals(new int[]{512,4,0,0},grid.getRow(3));
+
+    }
+
+    @Test
+    public void putAllZerosOnRightSideTest() {
+        assertArrayEquals(new int[]{4,2,0,0} , grid.putAllZerosOnRightSide(new int[]{0,4,0,2}));
+        assertArrayEquals(new int[]{8,4,2,0} , grid.putAllZerosOnRightSide(new int[]{8,4,0,2}));
+        assertArrayEquals(new int[]{32,8,8,0} , grid.putAllZerosOnRightSide(new int[]{32,8,8,0}));
+        assertArrayEquals(new int[]{256,256,4,0} , grid.putAllZerosOnRightSide(new int[]{256,256,0,4}));
 
     }
 
