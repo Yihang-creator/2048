@@ -1,9 +1,7 @@
 package model;
 
-import java.util.ArrayList;
-
 public class Grid {
-    private int[][] grid = new int[4][4];
+    private int[][] matrix = new int[4][4];
     private int score;
     // after each move, only tiles numbered 2 or 4 will be added to the grid
     private int[] arrayOfNumberAppear = {2,4};
@@ -20,8 +18,9 @@ public class Grid {
     }
 
     //MODIFIES: this
-    //EFFECTS: after each move, a new tile will be added to the grid
-    public void addNewTiles() {
+    //EFFECTS: after each move, a new tile numbered 2 or 4 will be added to an empty grid.
+    //         No existing tiles will be changed.
+    public void addNewTile() {
 
     }
 
@@ -34,7 +33,7 @@ public class Grid {
     //REQUIRES: 0 <= rowNum <=3
     //EFFECTS: return the row of the given index
     public int[] getRow(int rowNum) {
-        return grid[rowNum];
+        return matrix[rowNum];
     }
 
     //REQUIRES: 0 <= colNum <=3
@@ -42,7 +41,7 @@ public class Grid {
     public int[] getCol(int colNum) {
         int[] column = new int[4];
         for (int i = 0; i < 4; i++) {
-            column[i] = grid[i][colNum];
+            column[i] = matrix[i][colNum];
         }
         return column;
     }
@@ -50,6 +49,20 @@ public class Grid {
     //EFFECTS: return the current score
     public int getScore() {
         return score;
+    }
+
+    //REQUIRES: row is an array with four elements, 0 < rowNum <=3
+    //MODIFIES: this
+    //EFFECTS: set the designated row to the given row
+    public void setRow(int[] row, int rowNum) {
+        matrix[rowNum] = row;
+
+    }
+
+    public void setCol(int[] col, int colNum) {
+        for (int i = 0; i < 4; i++) {
+            matrix[i][colNum] = col[i];
+        }
     }
 
 
