@@ -2,6 +2,10 @@ package model;
 
 import java.util.Random;
 
+// class-level comment: Grid is used to represent the 4x4 grid and the behaviour of the grids.
+// Class grid have two most important fields , matrix is used to represent 4x4 grid and numbers in the grid using arrays
+// score is used to represent the score obtained when merging tiles.
+
 public class Grid {
     private int[][] matrix = new int[4][4];
     private int score;

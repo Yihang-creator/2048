@@ -2,6 +2,7 @@ package model;
 
 import java.util.ArrayList;
 
+// OneRanking is used to represent the player's name and his/her score in this single game
 public class OneRanking {
 
     private String name;

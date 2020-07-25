@@ -2,14 +2,16 @@ package model;
 
 import java.util.ArrayList;
 
+//RankingList records the names of players and scores of rankings.
+// corresponding name and score have the same index in two lists.
 public class RankingList {
 
     private ArrayList<String> listOfPlayerNames;
     private ArrayList<Integer> listOfScores;
 
     public RankingList() {
-        listOfPlayerNames = new ArrayList();
-        listOfScores      = new ArrayList();
+        listOfPlayerNames = new ArrayList<>();
+        listOfScores      = new ArrayList<>();
     }
 
     //REQUIRES: listOfPlayerNames and listOfScores are non-empty
