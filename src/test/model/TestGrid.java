@@ -192,10 +192,13 @@ class TestGrid {
                 addedNum++;
             }
         }
+        if (grid.getRow(0)[3] == 2 || grid.getRow(0)[3] == 4) {
+            addedNum--;
+        }
         if (grid.getRow(1)[2] == 2 || grid.getRow(1)[2] == 4) {
             addedNum++;
         }
-        if (grid.getRow(1)[3] == 2 || grid.getRow(1)[3] == 4) {
+        if (grid.getRow(2)[2] == 2 || grid.getRow(1)[2] == 4) {
             addedNum++;
         }
         assertEquals(1,addedNum);

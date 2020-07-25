@@ -67,13 +67,27 @@ public class TestRankingList {
         assertEquals(2000,rankingList.getListOfScores().get(4));
     }
 
-    //EFFECTS: return the name of the highest ranking
+
+
+    @Test
     public void getHighestNameTest() {
+        rankingList.addRanking(oneRanking1);
+        rankingList.addRanking(oneRanking2);
+        rankingList.addRanking(oneRanking3);
+        rankingList.addRanking(oneRanking4);
+        rankingList.addRanking(oneRanking5);
+        assertEquals("Player5",rankingList.getHighestName());
 
     }
 
-    //EFFECTS: return the score of the highest ranking
+    @Test
     public void getHighestScoreTest() {
+        rankingList.addRanking(oneRanking1);
+        rankingList.addRanking(oneRanking2);
+        rankingList.addRanking(oneRanking3);
+        rankingList.addRanking(oneRanking4);
+        rankingList.addRanking(oneRanking5);
+        assertEquals(30488,rankingList.getHighestScore());
 
     }
 
