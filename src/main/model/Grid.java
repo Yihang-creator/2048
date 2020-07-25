@@ -149,6 +149,7 @@ public class Grid {
         for (int i = 0; i < 4; i++) {
             if (row[i] == lastElement) {
                 row[i - 1] = 2 * row[i];
+                addScores(2 * row[i]);
                 row[i] = 0;
                 lastElement = 0;
             } else {
