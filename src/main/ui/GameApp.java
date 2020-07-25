@@ -154,7 +154,6 @@ public class GameApp {
         System.out.println("Current Score : " + grid.getScore());
         System.out.println("----------------------");
         for (int i = 0; i < 4; i++) {
-            System.out.println("|                    |");
             System.out.print("|");
             int[] row = grid.getRow(i);
             for (int j = 0; j < 4; j++) {
@@ -165,7 +164,6 @@ public class GameApp {
                 }
             }
             System.out.println("");
-            System.out.println("|                    |");
             System.out.println("----------------------");
         }
     }
