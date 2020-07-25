@@ -74,7 +74,6 @@ public class GameApp {
                 nextMove = command2.nextLine();
             }
             processCommand(nextMove);
-            grid.addNewTile();
             printGrid();
 
         }
@@ -91,18 +90,22 @@ public class GameApp {
         if (nextMove.equals("a")) {
             if (grid.ableToMoveLeft()) {
                 grid.moveAndMergeLeft();
+                grid.addNewTile();
             }
         } else if (nextMove.equals("d")) {
             if (grid.ableToMoveRight()) {
                 grid.moveAndMergeRight();
+                grid.addNewTile();
             }
         } else if (nextMove.equals("w")) {
             if (grid.ableToMoveUp()) {
                 grid.moveAndMergeUp();
+                grid.addNewTile();
             }
         } else if (nextMove.equals("s")) {
             if (grid.ableToMoveDown()) {
                 grid.moveAndMergeDown();
+                grid.addNewTile();
             }
         } else if (nextMove.equals("q")) {
             safeExit();
