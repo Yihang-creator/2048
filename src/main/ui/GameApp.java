@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class GameApp {
     private Grid grid;
-    private OneRanking oneRanking;
+    private OneRanking oneRanking = new OneRanking();
     private RankingList rankingList = new RankingList();
     private Scanner command;
 
@@ -64,31 +64,21 @@ public class GameApp {
     private void continueGame() {
         while (!grid.isOver()) {
             System.out.println("enter next move: a for left, d for right, w for up, s for down; enter q to quit");
-            String nextMove = command.nextLine();
+            Scanner command2 = new Scanner(System.in);
+            String nextMove = command2.nextLine();
             boolean notMove1 = !nextMove.equals("a") && !nextMove.equals("d");
             boolean notMove2 = !nextMove.equals("w") && !nextMove.equals("s");
             while (notMove1 && notMove2 && !nextMove.equals("q")) {
                 System.out.print("invalid input!");
                 System.out.println("enter next move: a for left, d for right, w for up, s for down; enter q to quit");
-                nextMove = command.nextLine();
+                nextMove = command2.nextLine();
             }
             processCommand(nextMove);
+            grid.addNewTile();
             printGrid();
 
         }
         safeExit();
-        System.out.println("enter r to restart, enter q to quit");
-        String ifRestart = command.nextLine();
-        if (ifRestart.equals("r")) {
-            restart();
-        } else {
-            System.exit(0);
-
-        }
-
-
-
-
     }
 
 
@@ -96,7 +86,7 @@ public class GameApp {
 
     //REQUIRES: nextMove must be one of "a" "d" "w" "s" "q"
     //MODIFIES: this
-    //EFFECTS:
+    //EFFECTS: move grid according to nextMove
     private void processCommand(String nextMove) {
         if (nextMove.equals("a")) {
             if (grid.ableToMoveLeft()) {
@@ -116,7 +106,6 @@ public class GameApp {
             }
         } else if (nextMove.equals("q")) {
             safeExit();
-            System.exit(0);
         }
 
 
@@ -125,13 +114,21 @@ public class GameApp {
 
     //MODIFIES: this
     //EFFECTS: saves the score obtained in the grid and lets the user enter the name of the ranking.
-    // And saves oneRanking to rankingList.
+    // And saves oneRanking to rankingList. and ask whether to restart or exit the game
     private void safeExit() {
+        Scanner command3 = new Scanner(System.in);
         oneRanking.extractScore(grid);
         System.out.println("enter the player's name");
-        String name = command.nextLine();
+        String name = command3.nextLine();
         oneRanking.setName(name);
         rankingList.addRanking(oneRanking);
+        System.out.println("enter r to restart, enter q to quit");
+        String ifRestart = command3.nextLine();
+        if (ifRestart.equals("r")) {
+            restart();
+        } else {
+            System.exit(0);
+        }
     }
 
 
@@ -159,13 +156,13 @@ public class GameApp {
             int[] row = grid.getRow(i);
             for (int j = 0; j < 4; j++) {
                 if (row[j] == 0) {
-                    System.out.print("     ");
+                    System.out.print("    |");
                 } else {
-                    System.out.print("  " + row[j] + "  ");
+                    System.out.print("  " + row[j] + "  |");
                 }
             }
+            System.out.println("");
             System.out.println("|                    |");
-            System.out.println("|");
             System.out.println("----------------------");
         }
     }
