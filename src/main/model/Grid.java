@@ -185,7 +185,6 @@ public class Grid {
         Random random = new Random();
         int tileNum = 1 + random.nextInt(getEmptyNum());
         int currentEmptyNum = 0;
-        outerloop:
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 if (matrix[i][j] == 0) {
@@ -193,7 +192,7 @@ public class Grid {
                 }
                 if (currentEmptyNum == tileNum) {
                     matrix[i][j] = arrayOfNumberAppear[random.nextInt(2)];
-                    break outerloop;
+                    return;
                 }
             }
         }
