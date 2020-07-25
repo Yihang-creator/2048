@@ -138,6 +138,7 @@ public class GameApp {
 
     //MODIFIES: this
     //EFFECTS: clear the grid and oneRanking. And start a new game
+    // and restart makes adding multiple oneRanking to rankinglist possible
     private void restart() {
         oneRanking = new OneRanking();
         runGame();
