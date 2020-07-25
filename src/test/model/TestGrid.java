@@ -40,22 +40,30 @@ class TestGrid {
         grid2.setRow(new int[]{256,128,64,8},2);
         grid2.setRow(new int[]{512,256,128,64},3);
         assertTrue(grid2.ableToMoveLeft());
-
     }
 
     @Test
     public void isOverTest() {
-        Grid grid2 = new Grid();
         grid.setRow(new int[]{64,8,4,2},0);
         grid.setRow(new int[]{128,64,8,4},1);
         grid.setRow(new int[]{256,128,64,8},2);
         grid.setRow(new int[]{512,256,128,64},3);
-        assertTrue(grid.isOver());
-        grid2.setRow(new int[]{64,8,4,4},0);
-        grid2.setRow(new int[]{128,64,8,4},1);
-        grid2.setRow(new int[]{256,128,64,8},2);
-        grid2.setRow(new int[]{512,256,128,64},3);
-        assertFalse(grid2.isOver());
+        assertTrue(grid.isOver()); // the game is over
+        grid.setRow(new int[]{64,8,4,4},0);
+        assertFalse(grid.isOver()); // can move in all directions
+        grid.setRow(new int[]{64,8,4,0},0);
+        grid.setRow(new int[]{256,128,32,8},2);
+        grid.setRow(new int[]{512,256,128,64},3);
+        assertFalse(grid.isOver()); // can only move up
+        grid.setRow(new int[]{64,8,4,0},0);
+        grid.setRow(new int[]{256,128,64,8},2);
+        grid.setRow(new int[]{512,256,128,64},3);
+        assertFalse(grid.isOver()); // can only move right
+        grid.setRow(new int[]{0,8,4,64},0);
+        assertFalse(grid.isOver()); // can only move left
+        grid.setRow(new int[]{64,8,4,2},0);
+        grid.setRow(new int[]{512,256,128,0},3);
+        assertFalse(grid.isOver()); // can only move down
 
     }
 

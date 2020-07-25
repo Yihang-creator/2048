@@ -91,11 +91,8 @@ public class Grid {
     //MODIFIES: this
     //EFFECTS: move all the tiles in the left direction. Merge neighbouring tiles which have the same number.
     public void moveAndMergeLeft() {
-        if (ableToMoveLeft()) {
-            for (int i = 0; i < 4; i++) {
-                moveAndMergeLeftByRow(i);
-
-            }
+        for (int i = 0; i < 4; i++) {
+            moveAndMergeLeftByRow(i);
         }
     }
 
@@ -108,9 +105,6 @@ public class Grid {
         moveAndMergeLeft();
         matrixRotationClockwise90Degrees();
         matrixRotationClockwise90Degrees();
-
-
-
     }
 
     //MODIFIES: this
@@ -121,9 +115,6 @@ public class Grid {
         matrixRotationClockwise90Degrees();
         moveAndMergeLeft();
         matrixRotationClockwise90Degrees();
-
-
-
     }
 
     //MODIFIES: this
@@ -134,8 +125,6 @@ public class Grid {
         matrixRotationClockwise90Degrees();
         matrixRotationClockwise90Degrees();
         matrixRotationClockwise90Degrees();
-
-
     }
 
     //MODIFIES: this
@@ -158,7 +147,7 @@ public class Grid {
         }
         // put all the zeros on the right
         row = putAllZerosOnRightSide(row);
-        setRow(row,rowNum);
+        setRow(row, rowNum);
     }
 
     public int[] putAllZerosOnRightSide(int[] row) {
@@ -196,21 +185,22 @@ public class Grid {
         Random random = new Random();
         int tileNum = 1 + random.nextInt(getEmptyNum());
         int currentEmptyNum = 0;
+        outerloop:
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 if (matrix[i][j] == 0) {
                     currentEmptyNum++;
-                    if (currentEmptyNum == tileNum) {
-                        matrix[i][j] = arrayOfNumberAppear[random.nextInt(2)];
-                        break;
-                    }
+                }
+                if (currentEmptyNum == tileNum) {
+                    matrix[i][j] = arrayOfNumberAppear[random.nextInt(2)];
+                    break outerloop;
                 }
             }
         }
     }
 
     //EFFECTS: return the number of empty grid in the matrix
-    public int getEmptyNum() {
+    private int getEmptyNum() {
         int emptyNum = 0;
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
@@ -226,7 +216,6 @@ public class Grid {
     //EFFECTS: addScore will be added to the total score
     public void addScores(int addScore) {
         score = score + addScore;
-
     }
 
 
@@ -264,6 +253,4 @@ public class Grid {
             matrix[i][colNum] = col[i];
         }
     }
-
-
 }
