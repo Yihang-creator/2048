@@ -157,11 +157,15 @@ public class GameApp {
         for (int i = 0; i < 4; i++) {
             System.out.print("|");
             int[] row = grid.getRow(i);
+
             for (int j = 0; j < 4; j++) {
                 if (row[j] == 0) {
-                    System.out.print("    |");
+                    System.out.printf("%s|","    ");
                 } else {
-                    System.out.print("  " + row[j] + "  |");
+                    String space = " ";
+                    int numberOfSpace = 4 - String.valueOf(row[j]).length();
+                    String manySpace = new String(new char[numberOfSpace]).replace("\0",space);
+                    System.out.printf("%s|", manySpace + row[j]);
                 }
             }
             System.out.println("");
