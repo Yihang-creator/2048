@@ -194,19 +194,19 @@ class TestGrid {
         int addedNum = 0;
         for (int i = 0; i < 4; i++) {
             if (grid.getRow(0)[i] == 2 || grid.getRow(0)[i] == 4) {
-                addedNum++;
+                addedNum++; // check if there is 2 or 4 in the first row
             }
             if (grid.getCol(3)[i] == 2 || grid.getCol(3)[i] == 4) {
-                addedNum++;
+                addedNum++; // check if there is 2 or 4 in the fourth column
             }
         }
         if (grid.getRow(0)[3] == 2 || grid.getRow(0)[3] == 4) {
-            addedNum--;
+            addedNum--; // 2 or 4 in the first row, fourth column will be counted twice
         }
         if (grid.getRow(1)[2] == 2 || grid.getRow(1)[2] == 4) {
             addedNum++;
         }
-        if (grid.getRow(2)[2] == 2 || grid.getRow(1)[2] == 4) {
+        if (grid.getRow(2)[2] == 2 || grid.getRow(2)[2] == 4) {
             addedNum++;
         }
         assertEquals(1,addedNum);
