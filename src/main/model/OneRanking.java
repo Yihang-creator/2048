@@ -43,5 +43,7 @@ public class OneRanking {
     public int getScore() {
         return this.score;
     }
+
+    
 }
 

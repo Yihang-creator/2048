@@ -11,6 +11,8 @@ import static java.lang.Integer.max;
 import static java.lang.Integer.min;
 
 public class GameApp {
+    private static final String GRID_FILE = "./data/grid.txt";
+    private static final String RANKINGLIST_FILE = "./data/rankinglist.txt";
     private Grid grid;
     private OneRanking oneRanking = new OneRanking();
     private RankingList rankingList = new RankingList();

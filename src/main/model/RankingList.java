@@ -1,10 +1,14 @@
 package model;
 
+import persistence.Reader;
+import persistence.Saveable;
+
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 //RankingList records the names of players and scores of rankings.
 // corresponding name and score have the same index in two lists.
-public class RankingList {
+public class RankingList implements Saveable {
 
     private ArrayList<String> listOfPlayerNames;
     private ArrayList<Integer> listOfScores;
@@ -67,5 +71,13 @@ public class RankingList {
     }
 
 
-
+    @Override
+    public void save(PrintWriter printWriter) {
+        for (int i = 0; i < listOfScores.size(); i++) {
+            printWriter.print(listOfPlayerNames.get(i));
+            printWriter.print(Reader.DELIMITER);
+            printWriter.print(listOfScores.get(i));
+            printWriter.println();
+        }
+    }
 }

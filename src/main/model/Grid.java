@@ -1,12 +1,16 @@
 package model;
 
+import persistence.Reader;
+import persistence.Saveable;
+
+import java.io.PrintWriter;
 import java.util.Random;
 
 // class-level comment: Grid is used to represent the 4x4 grid and the behaviour of the grids.
 // Class grid have two most important fields , matrix is used to represent 4x4 grid and numbers in the grid using arrays
 // score is used to represent the score obtained when merging tiles.
 
-public class Grid {
+public class Grid implements Saveable {
     private int[][] matrix = new int[4][4];
     private int score;
     // after each move, only tiles numbered 2 or 4 will be added to the grid
@@ -255,5 +259,24 @@ public class Grid {
         for (int i = 0; i < 4; i++) {
             matrix[i][colNum] = col[i];
         }
+    }
+
+    //REQUIRES: matrix should be a 4x4 in scale
+    //EFFECTS: set the current matrix to be the given matrix
+    public void setMatrix(int[][] matrix) {
+        this.matrix = matrix;
+    }
+
+    @Override
+    public void save(PrintWriter printWriter) {
+        for (int i = 0; i < 4; i++) {
+            printWriter.print(matrix[i][1] + Reader.DELIMITER);
+            printWriter.print(matrix[i][2] + Reader.DELIMITER);
+            printWriter.print(matrix[i][3] + Reader.DELIMITER);
+            printWriter.print(matrix[i][4]);
+            printWriter.println();
+        }
+        printWriter.print(score);
+
     }
 }
