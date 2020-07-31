@@ -17,6 +17,8 @@ public class GameApp {
     private OneRanking oneRanking = new OneRanking();
     private RankingList rankingList = new RankingList();
     private Scanner command;
+    private static final int WIDTHOFRANK = 4;
+    private static final int WIDTHOFPLAYER = 10;
 
     //EFFECTS ; run the game application
     public GameApp() {
@@ -200,9 +202,10 @@ public class GameApp {
 
     //EFFECTS: print the ranking list
     private void printRankingList() {
-        int widthOfRank = 4;
-        int widthOfPLayer = 10;
-        int widthOfScore = max(rankingList.getHighestScore().toString().length(),5);
+        int widthOfScore = 5;
+        if (rankingList.getListOfScores().size() != 0 && rankingList.getHighestScore().toString().length() > 5) {
+            widthOfScore = rankingList.getHighestScore().toString().length();
+        }
         System.out.println("RankingList");
         System.out.println("-------------------------------------");
         System.out.printf("|%s|%s|%s", "rank", "player    ", "score");
@@ -213,8 +216,8 @@ public class GameApp {
             System.out.println("no scores recorded for now");
         }
         for (int i = 0; i < rankingList.getListOfScores().size(); i++) {
-            int numberOfSpaceinRank = widthOfRank - String.valueOf(i + 1).length();
-            int numberOfSpaceinPlayer = widthOfPLayer - rankingList.getListOfPlayerNames().get(i).length();
+            int numberOfSpaceinRank = WIDTHOFRANK - String.valueOf(i + 1).length();
+            int numberOfSpaceinPlayer = WIDTHOFPLAYER - rankingList.getListOfPlayerNames().get(i).length();
             int numberOfSpaceinScore = widthOfScore - rankingList.getListOfScores().get(i).toString().length();
             String spaceInRank = new String(new char[numberOfSpaceinRank]).replace("\0", " ");
             String spaceInPlayer = new String(new char[numberOfSpaceinPlayer]).replace("\0", " ");
