@@ -270,10 +270,10 @@ public class Grid implements Saveable {
     @Override
     public void save(PrintWriter printWriter) {
         for (int i = 0; i < 4; i++) {
+            printWriter.print(matrix[i][0] + Reader.DELIMITER);
             printWriter.print(matrix[i][1] + Reader.DELIMITER);
             printWriter.print(matrix[i][2] + Reader.DELIMITER);
-            printWriter.print(matrix[i][3] + Reader.DELIMITER);
-            printWriter.print(matrix[i][4]);
+            printWriter.print(matrix[i][3]);
             printWriter.println();
         }
         printWriter.print(score);

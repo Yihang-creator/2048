@@ -31,12 +31,12 @@ public class TestReader {
     @Test
     void testParseMatrixFile2() {
         try {
-            Grid grid2 = Reader.readMatrix(new File("./data/testMatrixFile1.txt"));
+            Grid grid2 = Reader.readMatrix(new File("./data/testMatrixFile2.txt"));
             assertArrayEquals(new int[]{8,4,0,0}, grid2.getRow(0));
             assertArrayEquals(new int[]{32,16,8,4}, grid2.getRow(1));
             assertArrayEquals(new int[]{128,8,4,8}, grid2.getRow(2));
             assertArrayEquals(new int[]{256,128,64,4}, grid2.getRow(3));
-            assertEquals(152, grid2.getScore());
+            assertEquals(1024, grid2.getScore());
         } catch (IOException e) {
             fail("IOException should noe be thrown");
         }

@@ -68,15 +68,17 @@ public class Reader {
     //EFFECTS: return a matrix parsed from the file's content
     public static int[][] parseMatrix(List<String> fileContent) {
         int[][] matrix = new int[4][4];
-
-
-
+        for (int i = 0; i < 4; i++) {
+            String [] splits = fileContent.get(i).split(DELIMITER);
+            for (int j = 0; j < 4; j++) {
+                matrix[i][j] = parseInt(splits[j]);
+            }
+        }
         return matrix;
     }
 
     public static int parseScore(List<String> fileContent) {
-
-        return 0;
+        return parseInt(fileContent.get(4));
     }
 
 

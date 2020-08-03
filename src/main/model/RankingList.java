@@ -5,13 +5,14 @@ import persistence.Saveable;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
 
 //RankingList records the names of players and scores of rankings.
 // corresponding name and score have the same index in two lists.
 public class RankingList implements Saveable {
 
-    private ArrayList<String> listOfPlayerNames;
-    private ArrayList<Integer> listOfScores;
+    private List<String> listOfPlayerNames;
+    private List<Integer> listOfScores;
 
     public RankingList() {
         listOfPlayerNames = new ArrayList<>();
@@ -59,13 +60,13 @@ public class RankingList implements Saveable {
 
 
     //EFFECTS; return the listOfScores
-    public ArrayList<Integer> getListOfScores() {
+    public List<Integer> getListOfScores() {
         return listOfScores;
 
     }
 
     //EFFECTS; return the listOfScores
-    public ArrayList<String> getListOfPlayerNames() {
+    public List<String> getListOfPlayerNames() {
         return listOfPlayerNames;
 
     }

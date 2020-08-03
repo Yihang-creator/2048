@@ -1,5 +1,5 @@
-PineTree 9888
-PalmTree 9886
-banyan 8674
-evergreen 7078
-poplar 888
+PineTree,9888
+PalmTree,9886
+banyan,8674
+evergreen,7078
+poplar,888
