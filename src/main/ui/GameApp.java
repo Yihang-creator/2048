@@ -3,11 +3,15 @@ package ui;
 import model.Grid;
 import model.OneRanking;
 import model.RankingList;
+import persistence.Reader;
+import persistence.Writer;
 
-import java.util.InputMismatchException;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Scanner;
 
-import static java.lang.Integer.max;
 import static java.lang.Integer.min;
 
 public class GameApp {
@@ -29,26 +33,24 @@ public class GameApp {
     //EFFECTS: run the game application
     private void runGame() {
         initializeGame();
+        firstChoice();
         continueGame();
 
 
     }
 
     //MODIFIES: this
-    //EFFECTS; initialize the grid and allow users to access rankinglist from the very beginning
-    private void initializeGame() {
-        grid = new Grid();
-        grid.addNewTile();
-        grid.addNewTile();
+    //EFFECTS: ask the user whether to start the game directly or access the rankinglist
+    private void firstChoice() {
         printGrid();
         command = new Scanner(System.in);
 
-        //first input: start a new game or access rankingList
-        System.out.println("enter 0 to start a new game, enter 1 to access rankinglist");
+        //first input: start the game or access rankingList
+        System.out.println("enter 0 to start the game, enter 1 to access rankinglist");
         String choice1 = command.nextLine();
         if (!choice1.equals("0") && !choice1.equals("1")) {
             while (true) {
-                System.out.println("invalid input! enter 0 to start a new game, enter 1 to access rankinglist");
+                System.out.println("invalid input! enter 0 to start the game, enter 1 to access rankinglist");
                 Scanner input = new Scanner(System.in);
                 choice1 = input.nextLine();
                 if (choice1.equals("1") || choice1.equals("0")) {
@@ -60,6 +62,43 @@ public class GameApp {
             printRankingListOption();
         }
 
+    }
+
+    //MODIFIES: this
+    //EFFECTS: load the game progress and ranking list from files if files exist. create a new grid and ranking list
+    // if the files don't exist.
+    private void initializeGame() {
+        File matrixFile = new File(GRID_FILE);
+        File rankingListFile = new File(RANKINGLIST_FILE);
+        if (matrixFile.exists()) {
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("type true to continue with the last game or start a new game otherwise");
+            String choice = scanner.nextLine();
+            if (choice.equalsIgnoreCase("true")) {
+                try {
+                    grid = Reader.readMatrix(matrixFile);
+                } catch (IOException e) {
+                    newGame();
+                }
+            } else {
+                newGame();
+            }
+        } else {
+            newGame();
+        }
+        try {
+            rankingList = Reader.readRankings(rankingListFile);
+        } catch (Exception e) {
+            rankingList = new RankingList();
+        }
+    }
+
+    //MODIFIES: this
+    //EFFECTS: initializes the grid
+    private void newGame() {
+        grid = new Grid();
+        grid.addNewTile();
+        grid.addNewTile();
     }
 
 
@@ -125,17 +164,42 @@ public class GameApp {
     // And saves oneRanking to rankingList. and ask whether to restart or exit the game
     private void safeExit() {
         Scanner command3 = new Scanner(System.in);
-        oneRanking.extractScore(grid);
-        System.out.println("enter the player's name (name length cannot exceed 10 characters)");
-        String name = command3.nextLine();
-        oneRanking.setName(name.substring(0,min(10,name.length())));
-        rankingList.addRanking(oneRanking);
         System.out.println("enter r to restart, quit otherwise");
         String ifRestart = command3.nextLine();
         if (ifRestart.equals("r")) {
+            oneRanking.extractScore(grid);
+            System.out.println("enter the player's name (name length cannot exceed 10 characters)");
+            String name = command3.nextLine();
+            oneRanking.setName(name.substring(0,min(10,name.length())));
+            rankingList.addRanking(oneRanking);
             restart();
         } else {
+            saveProgress();
             System.exit(0);
+        }
+    }
+
+    //EFFECTS: if the game is not over, save the game to GRID_FILE. save the ranking list no matter what.
+    private void saveProgress() {
+        if (!grid.isOver()) {
+            try {
+                Writer writer = new Writer(new File(GRID_FILE));
+                writer.write(grid);
+                writer.close();
+            } catch (FileNotFoundException e) {
+                System.out.println("unable to save the game progress");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            Writer writer = new Writer(new File(RANKINGLIST_FILE));
+            writer.write(rankingList);
+            writer.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("unable to save the ranking list");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
         }
     }
 
@@ -145,7 +209,9 @@ public class GameApp {
     // and restart makes adding multiple oneRanking to rankinglist possible
     private void restart() {
         oneRanking = new OneRanking();
-        runGame();
+        newGame();
+        firstChoice();
+        continueGame();
     }
 
 

@@ -48,16 +48,17 @@ public class Reader {
     //          containing all the names of players and their correponding scores
     public static RankingList parseRankingList(List<String> fileContent) {
         RankingList rankingList = new RankingList();
-
-        for (int i = 0; i < fileContent.size(); i++) {
-            String[] splits = fileContent.get(i).split(DELIMITER);
-            ArrayList<String> line = new ArrayList<>(Arrays.asList(splits));
-            String name = line.get(0);
-            int score = parseInt(line.get(1));
-            OneRanking oneRanking = new OneRanking();
-            oneRanking.setName(name);
-            oneRanking.setScore(score);
-            rankingList.addRanking(oneRanking);
+        if (!fileContent.isEmpty()) {
+            for (int i = 0; i < fileContent.size(); i++) {
+                String[] splits = fileContent.get(i).split(DELIMITER);
+                ArrayList<String> line = new ArrayList<>(Arrays.asList(splits));
+                String name = line.get(0);
+                int score = parseInt(line.get(1));
+                OneRanking oneRanking = new OneRanking();
+                oneRanking.setName(name);
+                oneRanking.setScore(score);
+                rankingList.addRanking(oneRanking);
+            }
         }
         return rankingList;
     }

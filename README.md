@@ -31,5 +31,5 @@ and exit the game.
 - As a user, I want to be able to choose whether to load the game progress or start a new game and erase
  saved progress.
 - As a user, I want to be able to restart a new game in the middle of a game.
-- As a user, I want to be able to choose whether to save the score I get in this game to history ranking list.
+- As a user, I want to be able to save the score I get in this game to history ranking list.
 - As a user, I want to be able to access the ranking list.
