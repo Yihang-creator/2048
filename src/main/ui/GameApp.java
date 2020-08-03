@@ -69,7 +69,6 @@ public class GameApp {
     // if the files don't exist.
     private void initializeGame() {
         File matrixFile = new File(GRID_FILE);
-        File rankingListFile = new File(RANKINGLIST_FILE);
         if (matrixFile.exists()) {
             Scanner scanner = new Scanner(System.in);
             System.out.println("type true to continue with the last game or start a new game otherwise");
@@ -81,25 +80,19 @@ public class GameApp {
                     newGame();
                 }
             } else {
+                matrixFile.delete();
                 newGame();
             }
         } else {
             newGame();
         }
         try {
-            rankingList = Reader.readRankings(rankingListFile);
+            rankingList = Reader.readRankings(new File(RANKINGLIST_FILE));
         } catch (Exception e) {
             rankingList = new RankingList();
         }
     }
 
-    //MODIFIES: this
-    //EFFECTS: initializes the grid
-    private void newGame() {
-        grid = new Grid();
-        grid.addNewTile();
-        grid.addNewTile();
-    }
 
 
     //MODIFIES:this
@@ -123,7 +116,30 @@ public class GameApp {
             printGrid();
 
         }
-        safeExit();
+        endGame();
+    }
+
+    //MODIFIES: this
+    //EFFECTS: when the game is over , end the game and save the current ranking to ranking list.
+    private void endGame() {
+        System.out.println("Game Over!");
+        saveAfterGameIsOver();
+        new File(GRID_FILE).delete();
+        Scanner command3 = new Scanner(System.in);
+        System.out.println("enter r to restart, quit otherwise");
+        if (command3.nextLine().equalsIgnoreCase("r")) {
+            restart();
+        } else {
+            System.exit(0);
+        }
+    }
+
+    //MODIFIES: this
+    //EFFECTS: initializes the grid
+    private void newGame() {
+        grid = new Grid();
+        grid.addNewTile();
+        grid.addNewTile();
     }
 
 
@@ -158,7 +174,6 @@ public class GameApp {
 
     }
 
-
     //MODIFIES: this
     //EFFECTS: saves the score obtained in the grid and lets the user enter the name of the ranking.
     // And saves oneRanking to rankingList. and ask whether to restart or exit the game
@@ -167,11 +182,7 @@ public class GameApp {
         System.out.println("enter r to restart, quit otherwise");
         String ifRestart = command3.nextLine();
         if (ifRestart.equals("r")) {
-            oneRanking.extractScore(grid);
-            System.out.println("enter the player's name (name length cannot exceed 10 characters)");
-            String name = command3.nextLine();
-            oneRanking.setName(name.substring(0,min(10,name.length())));
-            rankingList.addRanking(oneRanking);
+            saveAfterGameIsOver();
             restart();
         } else {
             saveProgress();
@@ -179,7 +190,20 @@ public class GameApp {
         }
     }
 
-    //EFFECTS: if the game is not over, save the game to GRID_FILE. save the ranking list no matter what.
+    //MODIFIES: this
+    //EFFECTS: end the game and save the score obtained in the grid and lets the user enter the name of the player
+    private void saveAfterGameIsOver() {
+        Scanner scanner = new Scanner(System.in);
+        oneRanking.extractScore(grid);
+        System.out.println("enter the player's name (name length cannot exceed 10 characters)");
+        String name = scanner.nextLine();
+        oneRanking.setName(name.substring(0, min(10, name.length())));
+        rankingList.addRanking(oneRanking);
+        saveProgress();
+
+    }
+
+    //EFFECTS: save the game to GRID_FILE. save the ranking list no matter what.
     private void saveProgress() {
         if (!grid.isOver()) {
             try {
@@ -201,6 +225,7 @@ public class GameApp {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+
     }
 
 
@@ -262,6 +287,7 @@ public class GameApp {
             }
         }
         if (choice2.equals("2")) {
+            saveProgress();
             System.exit(0);
         }
     }
