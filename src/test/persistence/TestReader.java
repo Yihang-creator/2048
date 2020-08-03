@@ -96,9 +96,20 @@ public class TestReader {
             assertEquals(15582,listOfScores.get(2));
 
         } catch (IOException e) {
-            fail("should noe throw IOException");
+            fail("should not throw IOException");
         }
 
+    }
+
+    @Test
+    void testEmptyRankingListFile() {
+        try {
+            RankingList rankingList3 = Reader.readRankings(new File("./data/testEmptyRankingListFile.txt"));
+            assertEquals(0,rankingList3.getListOfScores().size());
+            assertEquals(0,rankingList3.getListOfPlayerNames().size());
+        } catch (IOException e) {
+            fail("should not thrown IOException");
+        }
     }
 
     @Test
