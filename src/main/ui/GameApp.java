@@ -6,6 +6,7 @@ import model.RankingList;
 import persistence.Reader;
 import persistence.Writer;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -14,7 +15,7 @@ import java.util.Scanner;
 
 import static java.lang.Integer.min;
 
-public class GameApp {
+public class GameApp extends JFrame {
     private static final String GRID_FILE = "./data/grid.txt";
     private static final String RANKINGLIST_FILE = "./data/rankinglist.txt";
     private Grid grid;
@@ -23,9 +24,11 @@ public class GameApp {
     private Scanner command;
     private static final int WIDTHOFRANK = 4;
     private static final int WIDTHOFPLAYER = 10;
+    private GridPanel gridPanel;
 
     //EFFECTS ; run the game application
     public GameApp() {
+        super("2048");
         runGame();
     }
 
@@ -33,6 +36,7 @@ public class GameApp {
     //EFFECTS: run the game application
     private void runGame() {
         initializeGame();
+        initializeGraphics();
         firstChoice();
         continueGame();
 
@@ -91,6 +95,18 @@ public class GameApp {
         } catch (Exception e) {
             rankingList = new RankingList();
         }
+    }
+
+    //MODIFIES: this
+    //EFFECTS:
+    private void initializeGraphics() {
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(800,950);
+        setLocationRelativeTo(null);
+        GridPanel gridPanel = new GridPanel(grid);
+        getContentPane().add(gridPanel);
+        setVisible(true);
+
     }
 
 
@@ -242,30 +258,33 @@ public class GameApp {
 
     //EFFECTS: print the 4x4 grid with numbered tiles, current score and highest history record
     private void printGrid() {
-        int highestScore = 0;
-        if (rankingList.getListOfScores().size() != 0) {
-            highestScore = rankingList.getHighestScore();
-        }
-        System.out.println("Highest record : " + highestScore);
-        System.out.println("Current Score : " + grid.getScore());
-        System.out.println("----------------------");
-        for (int i = 0; i < 4; i++) {
-            System.out.print("|");
-            int[] row = grid.getRow(i);
+//        int highestScore = 0;
+//        if (rankingList.getListOfScores().size() != 0) {
+//            highestScore = rankingList.getHighestScore();
+//        }
+//        System.out.println("Highest record : " + highestScore);
+//        System.out.println("Current Score : " + grid.getScore());
+//        System.out.println("----------------------");
+//        for (int i = 0; i < 4; i++) {
+//            System.out.print("|");
+//            int[] row = grid.getRow(i);
+//
+//            for (int j = 0; j < 4; j++) {
+//                if (row[j] == 0) {
+//                    System.out.printf("%s|", "    ");
+//                } else {
+//                    String space = " ";
+//                    int numberOfSpace = 4 - String.valueOf(row[j]).length();
+//                    String manySpace = new String(new char[numberOfSpace]).replace("\0", space);
+//                    System.out.printf("%s|", manySpace + row[j]);
+//                }
+//            }
+//            System.out.println("");
+//            System.out.println("----------------------");
+//        }
+        repaint();
+        setVisible(true);
 
-            for (int j = 0; j < 4; j++) {
-                if (row[j] == 0) {
-                    System.out.printf("%s|", "    ");
-                } else {
-                    String space = " ";
-                    int numberOfSpace = 4 - String.valueOf(row[j]).length();
-                    String manySpace = new String(new char[numberOfSpace]).replace("\0", space);
-                    System.out.printf("%s|", manySpace + row[j]);
-                }
-            }
-            System.out.println("");
-            System.out.println("----------------------");
-        }
     }
 
     //MODIFIES: this
