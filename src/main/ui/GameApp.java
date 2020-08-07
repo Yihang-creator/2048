@@ -7,6 +7,9 @@ import persistence.Reader;
 import persistence.Writer;
 
 import javax.swing.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -114,25 +117,25 @@ public class GameApp extends JFrame {
     //MODIFIES:this
     //EFFECTS: continue playing 2048 game after 2 tiles are added to an empty 4x4 grid
     private void continueGame() {
-        while (!grid.isOver()) {
-            System.out.println("enter next move: a for left, d for right, w for up, s for down; enter q to quit");
-            Scanner command2 = new Scanner(System.in);
-            String nextMove = command2.nextLine();
-            boolean notMove1 = !nextMove.equals("a") && !nextMove.equals("d");
-            boolean notMove2 = !nextMove.equals("w") && !nextMove.equals("s");
-            while (notMove1 && notMove2 && !nextMove.equals("q")) {
-                System.out.print("invalid input!");
-                System.out.println("enter next move: a for left, d for right, w for up, s for down; enter q to quit");
-                Scanner input = new Scanner(System.in);
-                nextMove = input.nextLine();
-                notMove1 = !nextMove.equals("a") && !nextMove.equals("d");
-                notMove2 = !nextMove.equals("w") && !nextMove.equals("s");
-            }
-            processCommand(nextMove);
-            printGrid();
-
+        addKeyListener(new KeyHandler());
+//        while (!grid.isOver()) {
+//            System.out.println("enter next move: a for left, d for right, w for up, s for down; enter q to quit");
+//            Scanner command2 = new Scanner(System.in);
+//            String nextMove = command2.nextLine();
+//            boolean notMove1 = !nextMove.equals("a") && !nextMove.equals("d");
+//            boolean notMove2 = !nextMove.equals("w") && !nextMove.equals("s");
+//            while (notMove1 && notMove2 && !nextMove.equals("q")) {
+//                System.out.print("invalid input!");
+//                System.out.println("enter next move: a for left, d for right, w for up, s for down; enter q to quit");
+//                Scanner input = new Scanner(System.in);
+//                nextMove = input.nextLine();
+//                notMove1 = !nextMove.equals("a") && !nextMove.equals("d");
+//                notMove2 = !nextMove.equals("w") && !nextMove.equals("s");
+//            printGrid();
+//        }
+        if (grid.isOver()) {
+            endGame();
         }
-        endGame();
     }
 
     //MODIFIES: this
@@ -167,11 +170,13 @@ public class GameApp extends JFrame {
             if (grid.ableToMoveLeft()) {
                 grid.moveAndMergeLeft();
                 grid.addNewTile();
+
             }
         } else if (nextMove.equals("d")) {
             if (grid.ableToMoveRight()) {
                 grid.moveAndMergeRight();
                 grid.addNewTile();
+
             }
         } else if (nextMove.equals("w")) {
             if (grid.ableToMoveUp()) {
@@ -183,9 +188,8 @@ public class GameApp extends JFrame {
                 grid.moveAndMergeDown();
                 grid.addNewTile();
             }
-        } else if (nextMove.equals("q")) {
-            safeExit();
         }
+        printGrid();
 
 
     }
@@ -336,5 +340,38 @@ public class GameApp extends JFrame {
             System.out.print("|" + (i + 1) + spaceInRank + "|" + rankingList.getListOfPlayerNames().get(i));
             System.out.println(spaceInPlayer + "|" + rankingList.getListOfScores().get(i) + spaceInScoreBelow + "|");
         }
+    }
+
+    //EFFECTS: Represents a key handler that responds to keyboard events
+    private class KeyHandler extends KeyAdapter {
+
+        @Override
+        //MODIFIES: this
+        //EFFECTS: updates grid in reponse to keyboard event
+        public void keyPressed(KeyEvent e) {
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_A:
+                case KeyEvent.VK_LEFT:
+                case KeyEvent.VK_KP_LEFT:
+                    processCommand("a");
+                    break;
+                case KeyEvent.VK_KP_RIGHT:
+                case KeyEvent.VK_RIGHT:
+                case KeyEvent.VK_D:
+                    processCommand("d");
+                    break;
+                case KeyEvent.VK_KP_UP:
+                case KeyEvent.VK_UP:
+                case KeyEvent.VK_W:
+                    processCommand("w");
+                    break;
+                case KeyEvent.VK_KP_DOWN:
+                case KeyEvent.VK_DOWN:
+                case KeyEvent.VK_S:
+                    processCommand("s");
+                    break;
+            }
+        }
+
     }
 }

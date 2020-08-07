@@ -35,14 +35,14 @@ public class GridPanel extends JPanel {
                     String number = Integer.toString(grid.getRow(i)[j]);
                     g.setColor(colorSetter(grid.getRow(i)[j]));
                     g.fillRoundRect(x, y, SL, SL, SL / 10, SL / 10);
-                    Font font = new Font("Arial", Font.BOLD,50);
+                    Font font = new Font("Arial", Font.BOLD,70);
                     g.setFont(font);
                     g.setColor(Color.white);
                     FontMetrics fontMetrics = getFontMetrics(font);
                     int width = fontMetrics.stringWidth(number);
                     int height = fontMetrics.getHeight();
                     int placeOfFontX = x + SL / 2 - width / 2;
-                    int placeOfFontY = y + SL / 2;
+                    int placeOfFontY = y + SL / 2 - height / 2 + fontMetrics.getAscent();
                     g.drawString(number, placeOfFontX, placeOfFontY);
                 }
             }
