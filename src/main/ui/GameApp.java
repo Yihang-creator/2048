@@ -7,9 +7,8 @@ import persistence.Reader;
 import persistence.Writer;
 
 import javax.swing.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.*;
+import java.awt.event.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -28,6 +27,9 @@ public class GameApp extends JFrame {
     private static final int WIDTHOFRANK = 4;
     private static final int WIDTHOFPLAYER = 10;
     private GridPanel gridPanel;
+    private ScorePanel scorePanel;
+    private JButton rankingListButton;
+    private JButton saveButton;
 
     //EFFECTS ; run the game application
     public GameApp() {
@@ -47,27 +49,35 @@ public class GameApp extends JFrame {
     }
 
     //MODIFIES: this
-    //EFFECTS: ask the user whether to start the game directly or access the rankinglist
+    //EFFECTS: add a button allow users to access rankingList
     private void firstChoice() {
         printGrid();
-        command = new Scanner(System.in);
-
-        //first input: start the game or access rankingList
-        System.out.println("enter 0 to start the game, enter 1 to access rankinglist");
-        String choice1 = command.nextLine();
-        if (!choice1.equals("0") && !choice1.equals("1")) {
-            while (true) {
-                System.out.println("invalid input! enter 0 to start the game, enter 1 to access rankinglist");
-                Scanner input = new Scanner(System.in);
-                choice1 = input.nextLine();
-                if (choice1.equals("1") || choice1.equals("0")) {
-                    break;
-                }
+//        command = new Scanner(System.in);
+//
+//        //first input: start the game or access rankingList
+//        System.out.println("enter 0 to start the game, enter 1 to access rankinglist");
+//        String choice1 = command.nextLine();
+//        if (!choice1.equals("0") && !choice1.equals("1")) {
+//            while (true) {
+//                System.out.println("invalid input! enter 0 to start the game, enter 1 to access rankinglist");
+//                Scanner input = new Scanner(System.in);
+//                choice1 = input.nextLine();
+//                if (choice1.equals("1") || choice1.equals("0")) {
+//                    break;
+//                }
+//            }
+//        }
+//        if (choice1.equals("1")) {
+//            printRankingListOption();
+//        }
+        JButton rankingListButton = new JButton("Ranking");
+        rankingListButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                printRankingListOption();
             }
-        }
-        if (choice1.equals("1")) {
-            printRankingListOption();
-        }
+        });
+        add(rankingListButton,BorderLayout.AFTER_LAST_LINE);
 
     }
 
@@ -77,21 +87,10 @@ public class GameApp extends JFrame {
     private void initializeGame() {
         File matrixFile = new File(GRID_FILE);
         if (matrixFile.exists()) {
-            Scanner scanner = new Scanner(System.in);
-            System.out.println("type true to continue with the last game or start a new game otherwise");
-            String choice = scanner.nextLine();
-            if (choice.equalsIgnoreCase("true")) {
-                try {
-                    grid = Reader.readMatrix(matrixFile);
-                } catch (IOException e) {
-                    newGame();
-                }
-            } else {
-                matrixFile.delete();
-                newGame();
-            }
-        } else {
-            newGame();
+//            Scanner scanner = new Scanner(System.in);
+//            System.out.println("type true to continue with the last game or start a new game otherwise");
+//            String choice = scanner.nextLine();
+            askWhetherToLoadGame(matrixFile);
         }
         try {
             rankingList = Reader.readRankings(new File(RANKINGLIST_FILE));
@@ -100,24 +99,72 @@ public class GameApp extends JFrame {
         }
     }
 
+    private void askWhetherToLoadGame(File matrixFile) {
+        JFrame load = new JFrame("2048: whether to load the last game?");
+        load.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JLabel text = new JLabel("whether to load the last game?");
+        JButton yesButton = new JButton("Yes!");
+        JButton noButton = new JButton("No!");
+        yesButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                try {
+                    grid = Reader.readMatrix(matrixFile);
+                } catch (IOException e) {
+                    newGame();
+                    load.dispatchEvent(new WindowEvent(load,WindowEvent.WINDOW_CLOSING));
+                    load.dispose();
+                }
+            }
+        });
+        noButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                newGame();
+                load.dispatchEvent(new WindowEvent(load,WindowEvent.WINDOW_CLOSING));
+                load.dispose();
+            }
+        });
+        load.add(text,BorderLayout.NORTH);
+        load.add(yesButton,BorderLayout.WEST);
+        load.add(noButton,BorderLayout.EAST);
+        load.pack();
+        load.setLocationRelativeTo(null);
+        load.setVisible(true);
+    }
+
     //MODIFIES: this
-    //EFFECTS:
+    //EFFECTS: initialize the panel showing scores and grids
     private void initializeGraphics() {
+//        addWindowListener(new WindowHandler());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(800,950);
+        setSize(650,950);
         setLocationRelativeTo(null);
-        GridPanel gridPanel = new GridPanel(grid);
-        getContentPane().add(gridPanel);
-        setVisible(true);
+        gridPanel = new GridPanel(grid);
+        scorePanel = new ScorePanel(grid,rankingList);
+        add(gridPanel);
+        add(scorePanel,BorderLayout.NORTH);
+
+        pack();
+        printGrid();
 
     }
 
 
 
     //MODIFIES:this
-    //EFFECTS: continue playing 2048 game after 2 tiles are added to an empty 4x4 grid
+    //EFFECTS: continue playing 2048 game after 2 tiles are added to an empty 4x4 grid; allow users to use keyevent to
+    // move the tiles. add a button allowing users to save the current progress
     private void continueGame() {
         addKeyListener(new KeyHandler());
+        saveButton = new JButton("save");
+        saveButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                saveGameToRankingList();
+            }
+        });
+        add(saveButton,BorderLayout.SOUTH);
 //        while (!grid.isOver()) {
 //            System.out.println("enter next move: a for left, d for right, w for up, s for down; enter q to quit");
 //            Scanner command2 = new Scanner(System.in);
@@ -133,16 +180,14 @@ public class GameApp extends JFrame {
 //                notMove2 = !nextMove.equals("w") && !nextMove.equals("s");
 //            printGrid();
 //        }
-        if (grid.isOver()) {
-            endGame();
-        }
+
     }
 
     //MODIFIES: this
     //EFFECTS: when the game is over , end the game and save the current ranking to ranking list.
     private void endGame() {
         System.out.println("Game Over!");
-        saveAfterGameIsOver();
+        saveGameToRankingList();
         new File(GRID_FILE).delete();
         Scanner command3 = new Scanner(System.in);
         System.out.println("enter r to restart, quit otherwise");
@@ -164,33 +209,43 @@ public class GameApp extends JFrame {
 
     //REQUIRES: nextMove must be one of "a" "d" "w" "s" "q"
     //MODIFIES: this
-    //EFFECTS: move grid according to nextMove
+    //EFFECTS: move grid according to nextMove. If the grid is movable in that direction, add a new tile, refresh the
+    // grid and determines whether to end the game
     private void processCommand(String nextMove) {
         if (nextMove.equals("a")) {
             if (grid.ableToMoveLeft()) {
                 grid.moveAndMergeLeft();
-                grid.addNewTile();
-
+                afterMovingTiles();
             }
         } else if (nextMove.equals("d")) {
             if (grid.ableToMoveRight()) {
                 grid.moveAndMergeRight();
-                grid.addNewTile();
-
+                afterMovingTiles();
             }
         } else if (nextMove.equals("w")) {
             if (grid.ableToMoveUp()) {
                 grid.moveAndMergeUp();
-                grid.addNewTile();
+                afterMovingTiles();
             }
         } else if (nextMove.equals("s")) {
             if (grid.ableToMoveDown()) {
                 grid.moveAndMergeDown();
-                grid.addNewTile();
+                afterMovingTiles();
             }
         }
-        printGrid();
 
+
+
+    }
+
+    //MODIFIES: this
+    //EFFECTS: add a new tile, refresh the grid and determines whether to end the game
+    private void afterMovingTiles() {
+        grid.addNewTile();
+        printGrid();
+        if (grid.isOver()) {
+            endGame();
+        }
 
     }
 
@@ -198,29 +253,50 @@ public class GameApp extends JFrame {
     //EFFECTS: saves the score obtained in the grid and lets the user enter the name of the ranking.
     // And saves oneRanking to rankingList. and ask whether to restart or exit the game
     private void safeExit() {
-        Scanner command3 = new Scanner(System.in);
-        System.out.println("enter r to restart, quit otherwise");
-        String ifRestart = command3.nextLine();
-        if (ifRestart.equals("r")) {
-            saveAfterGameIsOver();
-            restart();
-        } else {
-            saveProgress();
-            System.exit(0);
-        }
+//        Scanner command3 = new Scanner(System.in);
+//        System.out.println("enter r to restart, quit otherwise");
+//        String ifRestart = command3.nextLine();
+//        if (ifRestart.equals("r")) {
+//            saveGameToRankingList();
+//            restart();
+//        } else {
+//            saveProgress();
+//            System.exit(0);
+//        }
     }
 
     //MODIFIES: this
-    //EFFECTS: end the game and save the score obtained in the grid and lets the user enter the name of the player
-    private void saveAfterGameIsOver() {
-        Scanner scanner = new Scanner(System.in);
-        oneRanking.extractScore(grid);
-        System.out.println("enter the player's name (name length cannot exceed 10 characters)");
-        String name = scanner.nextLine();
-        oneRanking.setName(name.substring(0, min(10, name.length())));
-        rankingList.addRanking(oneRanking);
-        saveProgress();
-
+    //EFFECTS: end the game and save the score obtained in the grid with the name
+    private void saveGameToRankingList() {
+//        Scanner scanner = new Scanner(System.in);
+//        oneRanking.extractScore(grid);
+//        System.out.println("enter the player's name (name length cannot exceed 10 characters)");
+//        String name = scanner.nextLine();
+//        oneRanking.setName(name.substring(0, min(10, name.length())));
+//        rankingList.addRanking(oneRanking);
+//        saveProgress();
+        JFrame newWindow = new JFrame("save the current score");
+        newWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        newWindow.setLocationRelativeTo(null);
+        JLabel text = new JLabel("Enter the player's name");
+        JTextField nameText = new JTextField("",10);
+        JButton confirmButton = new JButton("confirm");
+        confirmButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String name = nameText.getText();
+                oneRanking.setName(name.substring(0, min(10, name.length())));
+                rankingList.addRanking(oneRanking);
+                newWindow.dispatchEvent(new WindowEvent(newWindow,WindowEvent.WINDOW_CLOSING));
+                newWindow.dispose();
+            }
+        });
+        nameText.requestFocusInWindow();
+        newWindow.add(text,BorderLayout.NORTH);
+        newWindow.add(nameText,BorderLayout.CENTER);
+        newWindow.add(confirmButton,BorderLayout.SOUTH);
+        newWindow.pack();
+        newWindow.setVisible(true);
     }
 
     //EFFECTS: save the game to GRID_FILE. save the ranking list no matter what.
@@ -253,10 +329,15 @@ public class GameApp extends JFrame {
     //EFFECTS: clear the grid and oneRanking. And start a new game
     // and restart makes adding multiple oneRanking to rankinglist possible
     private void restart() {
+        remove(gridPanel);
+        remove(scorePanel);
         oneRanking = new OneRanking();
         newGame();
-        firstChoice();
-        continueGame();
+        gridPanel = new GridPanel(grid);
+        add(gridPanel);
+        scorePanel = new ScorePanel(grid,rankingList);
+        add(scorePanel,BorderLayout.NORTH);
+        printGrid();
     }
 
 
@@ -286,8 +367,10 @@ public class GameApp extends JFrame {
 //            System.out.println("");
 //            System.out.println("----------------------");
 //        }
-        repaint();
+        scorePanel.update();
+        gridPanel.repaint();
         setVisible(true);
+
 
     }
 
@@ -296,58 +379,65 @@ public class GameApp extends JFrame {
     private void printRankingListOption() {
         rankingList.sortRankingList();
         printRankingList();
-        System.out.println("enter 0 to start a new game, enter 2 to quit");
-        command = new Scanner(System.in);
-        String choice2 = command.nextLine();
-        if (!choice2.equals("0") && !choice2.equals("2")) {
-            while (true) {
-                System.out.println("invalid input! enter 0 to start a new game, enter 2 to quit");
-                Scanner input = new Scanner(System.in);
-                choice2 = input.nextLine();
-                if (choice2.equals("0") || choice2.equals("2")) {
-                    break;
-                }
-            }
-        }
-        if (choice2.equals("2")) {
-            saveProgress();
-            System.exit(0);
-        }
+//        System.out.println("enter 0 to start a new game, enter 2 to quit");
+//        command = new Scanner(System.in);
+//        String choice2 = command.nextLine();
+//        if (!choice2.equals("0") && !choice2.equals("2")) {
+//            while (true) {
+//                System.out.println("invalid input! enter 0 to start a new game, enter 2 to quit");
+//                Scanner input = new Scanner(System.in);
+//                choice2 = input.nextLine();
+//                if (choice2.equals("0") || choice2.equals("2")) {
+//                    break;
+//                }
+//            }
+//        }
+//        if (choice2.equals("2")) {
+//            saveProgress();
+//            System.exit(0);
+//        }
     }
 
     //EFFECTS: print the ranking list
     private void printRankingList() {
-        int widthOfScore = 5;
-        if (rankingList.getListOfScores().size() != 0 && rankingList.getHighestScore().toString().length() > 5) {
-            widthOfScore = rankingList.getHighestScore().toString().length();
-        }
-        System.out.println("RankingList");
-        System.out.println("-------------------------------------");
-        System.out.printf("|%s|%s|%s", "rank", "player    ", "score");
-        String spaceInScoreAbove = new String(new char[widthOfScore - 5]).replace("\0", " ");
-        System.out.println("|");
-        if (rankingList.getListOfScores().size() == 0) {
-            System.out.println("                                     ");
-            System.out.println("no scores recorded for now");
-        }
-        for (int i = 0; i < rankingList.getListOfScores().size(); i++) {
-            int numberOfSpaceinRank = WIDTHOFRANK - String.valueOf(i + 1).length();
-            int numberOfSpaceinPlayer = WIDTHOFPLAYER - rankingList.getListOfPlayerNames().get(i).length();
-            int numberOfSpaceinScore = widthOfScore - rankingList.getListOfScores().get(i).toString().length();
-            String spaceInRank = new String(new char[numberOfSpaceinRank]).replace("\0", " ");
-            String spaceInPlayer = new String(new char[numberOfSpaceinPlayer]).replace("\0", " ");
-            String spaceInScoreBelow = new String(new char[numberOfSpaceinScore]).replace("\0", " ");
-            System.out.print("|" + (i + 1) + spaceInRank + "|" + rankingList.getListOfPlayerNames().get(i));
-            System.out.println(spaceInPlayer + "|" + rankingList.getListOfScores().get(i) + spaceInScoreBelow + "|");
-        }
+//        int widthOfScore = 5;
+//        if (rankingList.getListOfScores().size() != 0 && rankingList.getHighestScore().toString().length() > 5) {
+//            widthOfScore = rankingList.getHighestScore().toString().length();
+//        }
+//        System.out.println("RankingList");
+//        System.out.println("-------------------------------------");
+//        System.out.printf("|%s|%s|%s", "rank", "player    ", "score");
+//        String spaceInScoreAbove = new String(new char[widthOfScore - 5]).replace("\0", " ");
+//        System.out.println("|");
+//        if (rankingList.getListOfScores().size() == 0) {
+//            System.out.println("                                     ");
+//            System.out.println("no scores recorded for now");
+//        }
+//        for (int i = 0; i < rankingList.getListOfScores().size(); i++) {
+//            int numberOfSpaceinRank = WIDTHOFRANK - String.valueOf(i + 1).length();
+//            int numberOfSpaceinPlayer = WIDTHOFPLAYER - rankingList.getListOfPlayerNames().get(i).length();
+//            int numberOfSpaceinScore = widthOfScore - rankingList.getListOfScores().get(i).toString().length();
+//            String spaceInRank = new String(new char[numberOfSpaceinRank]).replace("\0", " ");
+//            String spaceInPlayer = new String(new char[numberOfSpaceinPlayer]).replace("\0", " ");
+//            String spaceInScoreBelow = new String(new char[numberOfSpaceinScore]).replace("\0", " ");
+//            System.out.print("|" + (i + 1) + spaceInRank + "|" + rankingList.getListOfPlayerNames().get(i));
+//            System.out.println(spaceInPlayer + "|" + rankingList.getListOfScores().get(i) + spaceInScoreBelow + "|");
+//        }
+        JFrame rankingWindow = new JFrame("Ranking");
+        rankingWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        RankingListPanel rankingListPanel = new RankingListPanel(rankingList);
+        rankingWindow.add(rankingListPanel);
+        rankingWindow.pack();
+        rankingWindow.setLocationRelativeTo(null);
+        rankingWindow.setVisible(true);
     }
 
-    //EFFECTS: Represents a key handler that responds to keyboard events
+    //Represents a key handler that responds to keyboard events
     private class KeyHandler extends KeyAdapter {
 
         @Override
         //MODIFIES: this
-        //EFFECTS: updates grid in reponse to keyboard event
+        //EFFECTS: updates grid in response to keyboard event
         public void keyPressed(KeyEvent e) {
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_A:
@@ -374,4 +464,17 @@ public class GameApp extends JFrame {
         }
 
     }
+
+//    // represent a windowHandler that reponnds to windows event
+//    private class WindowHandler extends WindowAdapter {
+//
+//        @Override
+//        //MODIFIES: this
+//        // EFFECTS: save the game progress to file when exit the game
+//        public void windowClosing(WindowEvent e) {
+//            safeExit();
+//        }
+//
+//    }
+
 }
