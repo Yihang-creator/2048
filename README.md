@@ -33,3 +33,14 @@ and exit the game.
 - As a user, I want to be able to restart a new game in the middle of a game.
 - As a user, I want to be able to save the score I get in this game to history ranking list.
 - As a user, I want to be able to access the ranking list.
+
+## ***Instructions for Grader***
+
+* when there is a last game saved, a window asking whether to load the last game will pop out.
+ Press yes to continue or press no to start a new game.
+* pressing "ranking" button to look at ranking, magnify the window to see.
+* pressing "restart" button to restart the game
+* save button save the current score to the ranking. When user clicks this button, a new window will pop out asking 
+the user to fill out the name. press confirm to save. User can continue the game after saving.
+* the game will automatically save progress if the user clicks X in the window.
+the saved progress can be loaded when launching the game next time.
