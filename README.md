@@ -44,3 +44,4 @@ and exit the game.
 the user to fill out the name. press confirm to save. User can continue the game after saving.
 * the game will automatically save progress if the user clicks X in the window.
 the saved progress can be loaded when launching the game next time.
+* press "w""s""a""d" or up/down/left/right to move tiles
