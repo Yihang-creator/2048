@@ -1,5 +1,6 @@
 package ui;
 
+import model.OneRanking;
 import model.RankingList;
 
 import javax.swing.*;
@@ -9,8 +10,8 @@ import java.util.List;
 // a ranking list panel used to paint panel
 public class RankingListPanel extends JPanel {
     private RankingList rankingList;
-    int size = rankingList.getListOfScores().size();
-    private Font font = new Font("Times New Roman", Font.BOLD, 30);
+    int size;
+    private Font font = new Font("Times New Roman", Font.BOLD, 10);
     FontMetrics fontMetrics = getFontMetrics(font);
     // height of rectangles
     private int height = fontMetrics.getHeight() * 2;
@@ -26,6 +27,10 @@ public class RankingListPanel extends JPanel {
     //EFFECTS: constructs a rankinglist panel
     public RankingListPanel(RankingList rankingList) {
         this.rankingList = rankingList;
+        this.size = rankingList.getListOfScores().size();
+        if (size == 0) {
+            rankingList.addRanking(new OneRanking());
+        }
     }
 
     @Override

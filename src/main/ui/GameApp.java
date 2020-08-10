@@ -30,17 +30,18 @@ public class GameApp extends JFrame {
     private ScorePanel scorePanel;
     private JButton rankingListButton;
     private JButton saveButton;
+    private JButton restartButton;
 
     //EFFECTS ; run the game application
     public GameApp() {
         super("2048");
-        runGame();
+        initializeGrid();
     }
 
     //MODIFIES: this
     //EFFECTS: run the game application
     private void runGame() {
-        initializeGame();
+        initializeRanking();
         initializeGraphics();
         firstChoice();
         continueGame();
@@ -71,40 +72,65 @@ public class GameApp extends JFrame {
 //            printRankingListOption();
 //        }
         JButton rankingListButton = new JButton("Ranking");
+        rankingListButton.setFocusable(false);
         rankingListButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 printRankingListOption();
             }
         });
-        add(rankingListButton,BorderLayout.AFTER_LAST_LINE);
+        add(rankingListButton,BorderLayout.EAST);
 
     }
 
     //MODIFIES: this
-    //EFFECTS: load the game progress and ranking list from files if files exist. create a new grid and ranking list
-    // if the files don't exist.
-    private void initializeGame() {
+    //EFFECTS: load the game progress from files if files exist. create a new grid if the files don't exist.
+    private void initializeGrid() {
         File matrixFile = new File(GRID_FILE);
         if (matrixFile.exists()) {
 //            Scanner scanner = new Scanner(System.in);
 //            System.out.println("type true to continue with the last game or start a new game otherwise");
 //            String choice = scanner.nextLine();
             askWhetherToLoadGame(matrixFile);
+        } else {
+            newGame();
+            runGame();
         }
+
+    }
+
+    //MODIFIES: this
+    //EFFECTS: load the ranking list from files if files exist. create a new ranking if the files don't exist.
+    private void initializeRanking() {
+        File matrixFile = new File(GRID_FILE);
         try {
             rankingList = Reader.readRankings(new File(RANKINGLIST_FILE));
         } catch (Exception e) {
             rankingList = new RankingList();
         }
+
     }
 
+
+
+    // MODIFIES: this
+    // EFFECTS: create a window asking the user whether to load the last game(if there is a last game)
     private void askWhetherToLoadGame(File matrixFile) {
         JFrame load = new JFrame("2048: whether to load the last game?");
-        load.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        load.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         JLabel text = new JLabel("whether to load the last game?");
+        load.add(text,BorderLayout.NORTH);
+        addYesButton(matrixFile, load);
+        addNoButton(load);
+        load.pack();
+        load.setLocationRelativeTo(null);
+        load.setVisible(true);
+    }
+
+    //MODIFIES: load
+    //EFFECTS: create a button. pressing this button means the user wants to load the last game
+    private void addYesButton(File matrixFile, JFrame load) {
         JButton yesButton = new JButton("Yes!");
-        JButton noButton = new JButton("No!");
         yesButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
@@ -112,31 +138,40 @@ public class GameApp extends JFrame {
                     grid = Reader.readMatrix(matrixFile);
                 } catch (IOException e) {
                     newGame();
+                } finally {
                     load.dispatchEvent(new WindowEvent(load,WindowEvent.WINDOW_CLOSING));
-                    load.dispose();
+                    runGame();
                 }
             }
         });
+        load.add(yesButton,BorderLayout.WEST);
+    }
+
+    //MODIFIES: load
+    //EFFECTS: create a button. pressing this button means the user doesn't want to load the last game
+    private void addNoButton(JFrame load) {
+        JButton noButton = new JButton("No!");
         noButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 newGame();
                 load.dispatchEvent(new WindowEvent(load,WindowEvent.WINDOW_CLOSING));
-                load.dispose();
+                runGame();
             }
         });
-        load.add(text,BorderLayout.NORTH);
-        load.add(yesButton,BorderLayout.WEST);
-        load.add(noButton,BorderLayout.EAST);
-        load.pack();
-        load.setLocationRelativeTo(null);
-        load.setVisible(true);
+        load.add(noButton, BorderLayout.EAST);
     }
 
     //MODIFIES: this
     //EFFECTS: initialize the panel showing scores and grids
     private void initializeGraphics() {
-//        addWindowListener(new WindowHandler());
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                saveProgress();
+                super.windowClosing(e);
+            }
+        });
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(650,950);
         setLocationRelativeTo(null);
@@ -144,7 +179,7 @@ public class GameApp extends JFrame {
         scorePanel = new ScorePanel(grid,rankingList);
         add(gridPanel);
         add(scorePanel,BorderLayout.NORTH);
-
+        setFocusable(true);
         pack();
         printGrid();
 
@@ -155,9 +190,11 @@ public class GameApp extends JFrame {
     //MODIFIES:this
     //EFFECTS: continue playing 2048 game after 2 tiles are added to an empty 4x4 grid; allow users to use keyevent to
     // move the tiles. add a button allowing users to save the current progress
+    // and another button allowing users to restart the game
     private void continueGame() {
         addKeyListener(new KeyHandler());
         saveButton = new JButton("save");
+        saveButton.setFocusable(false);
         saveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -165,6 +202,15 @@ public class GameApp extends JFrame {
             }
         });
         add(saveButton,BorderLayout.SOUTH);
+        restartButton = new JButton("restart");
+        restartButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                restart();
+            }
+        });
+        add(restartButton,BorderLayout.WEST);
+        pack();
 //        while (!grid.isOver()) {
 //            System.out.println("enter next move: a for left, d for right, w for up, s for down; enter q to quit");
 //            Scanner command2 = new Scanner(System.in);
@@ -186,16 +232,24 @@ public class GameApp extends JFrame {
     //MODIFIES: this
     //EFFECTS: when the game is over , end the game and save the current ranking to ranking list.
     private void endGame() {
-        System.out.println("Game Over!");
+//        System.out.println("Game Over!");
+        JFrame gameOver = new JFrame("GameOver");
+        JLabel label = new JLabel("Game Over");
+        label.setFont(new Font("Arial",Font.BOLD,100));
+        gameOver.add(label,BorderLayout.CENTER);
+        gameOver.pack();
+        gameOver.setLocationRelativeTo(null);
+        gameOver.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        gameOver.setVisible(true);
         saveGameToRankingList();
         new File(GRID_FILE).delete();
-        Scanner command3 = new Scanner(System.in);
-        System.out.println("enter r to restart, quit otherwise");
-        if (command3.nextLine().equalsIgnoreCase("r")) {
-            restart();
-        } else {
-            System.exit(0);
-        }
+//        Scanner command3 = new Scanner(System.in);
+//        System.out.println("enter r to restart, quit otherwise");
+//        if (command3.nextLine().equalsIgnoreCase("r")) {
+//            restart();
+//        } else {
+//            System.exit(0);
+//        }
     }
 
     //MODIFIES: this
@@ -252,7 +306,7 @@ public class GameApp extends JFrame {
     //MODIFIES: this
     //EFFECTS: saves the score obtained in the grid and lets the user enter the name of the ranking.
     // And saves oneRanking to rankingList. and ask whether to restart or exit the game
-    private void safeExit() {
+//    private void safeExit() {
 //        Scanner command3 = new Scanner(System.in);
 //        System.out.println("enter r to restart, quit otherwise");
 //        String ifRestart = command3.nextLine();
@@ -263,7 +317,8 @@ public class GameApp extends JFrame {
 //            saveProgress();
 //            System.exit(0);
 //        }
-    }
+//        saveGameToRankingList();
+//    }
 
     //MODIFIES: this
     //EFFECTS: end the game and save the score obtained in the grid with the name
@@ -276,7 +331,7 @@ public class GameApp extends JFrame {
 //        rankingList.addRanking(oneRanking);
 //        saveProgress();
         JFrame newWindow = new JFrame("save the current score");
-        newWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        newWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         newWindow.setLocationRelativeTo(null);
         JLabel text = new JLabel("Enter the player's name");
         JTextField nameText = new JTextField("",10);
@@ -424,12 +479,13 @@ public class GameApp extends JFrame {
 //            System.out.println(spaceInPlayer + "|" + rankingList.getListOfScores().get(i) + spaceInScoreBelow + "|");
 //        }
         JFrame rankingWindow = new JFrame("Ranking");
-        rankingWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        rankingWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         RankingListPanel rankingListPanel = new RankingListPanel(rankingList);
         rankingWindow.add(rankingListPanel);
         rankingWindow.pack();
         rankingWindow.setLocationRelativeTo(null);
         rankingWindow.setVisible(true);
+        rankingWindow.repaint();
     }
 
     //Represents a key handler that responds to keyboard events
@@ -465,16 +521,5 @@ public class GameApp extends JFrame {
 
     }
 
-//    // represent a windowHandler that reponnds to windows event
-//    private class WindowHandler extends WindowAdapter {
-//
-//        @Override
-//        //MODIFIES: this
-//        // EFFECTS: save the game progress to file when exit the game
-//        public void windowClosing(WindowEvent e) {
-//            safeExit();
-//        }
-//
-//    }
 
 }
