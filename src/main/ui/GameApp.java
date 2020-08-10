@@ -341,6 +341,7 @@ public class GameApp extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String name = nameText.getText();
                 oneRanking.setName(name.substring(0, min(10, name.length())));
+                oneRanking.setScore(grid.getScore());
                 rankingList.addRanking(oneRanking);
                 newWindow.dispatchEvent(new WindowEvent(newWindow,WindowEvent.WINDOW_CLOSING));
                 newWindow.dispose();
