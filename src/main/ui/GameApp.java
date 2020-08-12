@@ -187,6 +187,7 @@ public class GameApp extends JFrame {
         });
         add(saveButton,BorderLayout.SOUTH);
         restartButton = new JButton("restart");
+        restartButton.setFocusable(false);
         restartButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
