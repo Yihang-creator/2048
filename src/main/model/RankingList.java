@@ -86,14 +86,19 @@ public class RankingList implements Saveable {
 
     }
 
+    //MODIFIES: this
+    //EFFECTS: set listOfPLayerNames
     public void setListOfPlayerNames(List<String> listOfPlayerNames) {
         this.listOfPlayerNames = listOfPlayerNames;
     }
 
+    //MODIFIES: this
+    //EFFECTS: set listOfScores
     public void setListOfScores(List<Integer> listOfScores) {
         this.listOfScores = listOfScores;
     }
 
+    //EFFECTS: save rankingList to file
     @Override
     public void save(PrintWriter printWriter) {
         for (int i = 0; i < listOfScores.size(); i++) {

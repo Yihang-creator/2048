@@ -11,10 +11,12 @@ import java.util.Random;
 // score is used to represent the score obtained when merging tiles.
 
 public class Grid implements Saveable {
-    private int[][] matrix = new int[4][4];
+    private static final int SIDE_LENGTH = 4;
+    private int[][] matrix = new int[SIDE_LENGTH][SIDE_LENGTH];
     private int score;
     // after each move, only tiles numbered 2 or 4 will be added to the grid
     private int[] arrayOfNumberAppear = {2, 4};
+    private int arraySize = arrayOfNumberAppear.length;
 
     //EFFECTS: construct an empty 4x4 grid
     public Grid() {
@@ -23,17 +25,27 @@ public class Grid implements Saveable {
 
     //EFFECTS: return true when the tiles in the grid can move in the left direction and false otherwise
     public boolean ableToMoveLeft() {
-        for (int i = 0; i < 4; i++) {         //determine whether there are neighbouring tiles with identical numbers
+        //determine whether there are neighbouring tiles with identical numbers
+        for (int i = 0; i < SIDE_LENGTH; i++) {
             int[] row = getRow(i);
             if (hasIdenticalTiles(row)) {
                 return true;
             }
         }
-        for (int i = 0; i < 4; i++) {         //determine whether there are empty grids in the leftmost three columnns
-            int[] row = getRow(i);            // that is between non-empty grids on the same row
-            for (int j = 3; j >= 0; j--) {
-                if (row[j] != 0) {
-                    for (int k = j; k >= 0; k--) {
+
+        //determine whether there are empty grids in the leftmost three columnns
+        // that is between non-empty grids on the same row
+        return isZeroBetweenNumbers();
+    }
+
+    //EFFECTS: return true there is empty grid in the leftmost three columnns
+    //        that is between non-empty grids on the same row and false otherwise
+    private boolean isZeroBetweenNumbers() {
+        for (int i = 0; i < SIDE_LENGTH; i++) {
+            int[] row = getRow(i);
+            for (int j = SIDE_LENGTH - 1; j >= 0; j--) {
+                if (row[j] != 0) {                        // find a first non-zero tile from right to left
+                    for (int k = j; k >= 0; k--) {        // find zero that is to the left of non-zero tile
                         if (row[k] == 0) {
                             return true;
                         }
@@ -99,7 +111,7 @@ public class Grid implements Saveable {
     //MODIFIES: this
     //EFFECTS: move all the tiles in the left direction. Merge neighbouring tiles which have the same number.
     public void moveAndMergeLeft() {
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < SIDE_LENGTH; i++) {
             moveAndMergeLeftByRow(i);
         }
     }
@@ -141,9 +153,10 @@ public class Grid implements Saveable {
         int[] row = getRow(rowNum);
         // put all the zeros on the right
         row = putAllZerosOnRightSide(row);
+
         // merge the same number
         int lastElement = -1;
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < SIDE_LENGTH; i++) {
             if (row[i] == lastElement) {
                 row[i - 1] = 2 * row[i];
                 addScores(2 * row[i]);
@@ -158,10 +171,12 @@ public class Grid implements Saveable {
         setRow(row, rowNum);
     }
 
+    //MODIFIES: row
+    //EFFECTS: move all the zeros to rightmost columns
     public int[] putAllZerosOnRightSide(int[] row) {
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < SIDE_LENGTH; i++) {
             if (row[i] == 0) {
-                for (int j = i; j < 4; j++) {
+                for (int j = i; j < SIDE_LENGTH; j++) {
                     if (row[j] != 0) {
                         row[i] = row[j];
                         row[j] = 0;
@@ -174,18 +189,19 @@ public class Grid implements Saveable {
     }
 
     //MODIFIES: this
-    //EFFECTS: rotate the matrix by 90 degrees ()
+    //EFFECTS: rotate the matrix by 90 degrees (clockwise)
     public void matrixRotationClockwise90Degrees() {
         int[][] newMatrix = new int[4][4];
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                newMatrix[i][j] = matrix[3 - j][i];
+        for (int i = 0; i < SIDE_LENGTH; i++) {
+            for (int j = 0; j < SIDE_LENGTH; j++) {
+                newMatrix[i][j] = matrix[SIDE_LENGTH - 1 - j][i];
             }
         }
         matrix = newMatrix;
 
     }
 
+    //REQUIRES: getEmptyNum() > 0
     //MODIFIES: this
     //EFFECTS: after each move, a new tile numbered 2 or 4 will be added to an empty grid.
     //         No existing tiles will be changed.
@@ -193,13 +209,13 @@ public class Grid implements Saveable {
         Random random = new Random();
         int tileNum = 1 + random.nextInt(getEmptyNum());
         int currentEmptyNum = 0;
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
+        for (int i = 0; i < SIDE_LENGTH; i++) {
+            for (int j = 0; j < SIDE_LENGTH; j++) {
                 if (matrix[i][j] == 0) {
                     currentEmptyNum++;
                 }
                 if (currentEmptyNum == tileNum) {
-                    matrix[i][j] = arrayOfNumberAppear[random.nextInt(2)];
+                    matrix[i][j] = arrayOfNumberAppear[random.nextInt(arraySize)];
                     return;
                 }
             }
@@ -209,8 +225,8 @@ public class Grid implements Saveable {
     //EFFECTS: return the number of empty grid in the matrix
     private int getEmptyNum() {
         int emptyNum = 0;
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
+        for (int i = 0; i < SIDE_LENGTH; i++) {
+            for (int j = 0; j < SIDE_LENGTH; j++) {
                 if (matrix[i][j] == 0) {
                     emptyNum++;
                 }
@@ -235,8 +251,8 @@ public class Grid implements Saveable {
     //REQUIRES: 0 <= colNum <=3
     //EFFECTS: return the column of the given index
     public int[] getCol(int colNum) {
-        int[] column = new int[4];
-        for (int i = 0; i < 4; i++) {
+        int[] column = new int[SIDE_LENGTH];
+        for (int i = 0; i < SIDE_LENGTH; i++) {
             column[i] = matrix[i][colNum];
         }
         return column;
@@ -255,8 +271,11 @@ public class Grid implements Saveable {
 
     }
 
+    //REQUIRES: col is an array with four elements, 0 < colNum <=3
+    //MODIFIES: this
+    //EFFECTS: set the designated column to the given column
     public void setCol(int[] col, int colNum) {
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < SIDE_LENGTH; i++) {
             matrix[i][colNum] = col[i];
         }
     }
@@ -267,9 +286,11 @@ public class Grid implements Saveable {
         this.matrix = matrix;
     }
 
+
+    //EFFECTS: save the grid and score to a file
     @Override
     public void save(PrintWriter printWriter) {
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < SIDE_LENGTH; i++) {
             printWriter.print(matrix[i][0] + Reader.DELIMITER);
             printWriter.print(matrix[i][1] + Reader.DELIMITER);
             printWriter.print(matrix[i][2] + Reader.DELIMITER);

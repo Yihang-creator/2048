@@ -54,3 +54,13 @@ Test and design a class that is robust.
 - Writer robust methods: Writer
 
 ## Phase4 - Task 3
+- In the grid class, I use number 4 in many places. 4 is actually the sidelength of my matrix.
+So, I decide to declare a constant at the beginning of grid class and replace every 4 used later 
+with the name of the field to improve readability and decrease coupling.
+- in the addNewTile method in the grid class, I use 2 as bound for a random index for the array.
+this is because in 2048 game, new tiles can only appear with number 2 and 4. In other words, 
+there are only two possibilities. So I decide to replace 2 with a newly declared field called 
+arraySize to improve readability and decrease coupling.
+- rename some of the methods in GameApp. transition from console to GUI changes some function of those methods.
+- change the order of methods in GameApp to improve readability.
+- refactor ableToMoveLeft method in class Grid to improve readability.

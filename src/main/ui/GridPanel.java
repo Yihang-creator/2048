@@ -53,6 +53,8 @@ public class GridPanel extends JPanel {
 
     }
 
+    //REQUIRE: number <= 20;
+    //EFFECTS: return the color of tiles numbered number over 2.
     private Color colorSetter(int number) {
         int changeDegree = 10;
         int exponentOfTwo = (int) (Math.log(number) / Math.log(2));
