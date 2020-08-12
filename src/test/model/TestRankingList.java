@@ -3,8 +3,10 @@ package model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.omg.CORBA.INITIALIZE;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -47,14 +49,22 @@ public class TestRankingList {
     @Test
     public void sortRankingListTest() {
         rankingList.addRanking(oneRanking1);
-        rankingList.sortRankingList();
+        try {
+            rankingList.sortRankingList();
+        } catch (Exception e) {
+            fail("should not have throw exception");
+        }
         assertEquals("Player1",rankingList.getListOfPlayerNames().get(0));
         assertEquals(9998,rankingList.getListOfScores().get(0));
         rankingList.addRanking(oneRanking2);
         rankingList.addRanking(oneRanking3);
         rankingList.addRanking(oneRanking4);
         rankingList.addRanking(oneRanking5);
-        rankingList.sortRankingList();
+        try {
+            rankingList.sortRankingList();
+        } catch (Exception e) {
+            fail("should not have thrown exception");
+        }
         assertEquals("Player5",rankingList.getListOfPlayerNames().get(0));
         assertEquals(30488,rankingList.getListOfScores().get(0));
         assertEquals("Player2",rankingList.getListOfPlayerNames().get(1));
@@ -67,6 +77,39 @@ public class TestRankingList {
         assertEquals(2000,rankingList.getListOfScores().get(4));
     }
 
+    @Test
+    public void sortRankingListEmptyTest() {
+        try {
+            rankingList.sortRankingList();
+            fail("should have thrown exception");
+        } catch (IndexOutOfBoundsException e) {
+            // does nothing.
+        } catch (InvalidRankingListException e) {
+            fail("unexpected exception");
+        }
+    }
+
+    @Test
+    public void sortRankingListInvalidTest() {
+        try {
+            List<String> names = new ArrayList<>();
+            names.add("player1");
+            List<Integer> scores = new ArrayList<>();
+            scores.add(99);
+            scores.add(100);
+            rankingList.setListOfPlayerNames(names);
+            rankingList.setListOfScores(scores);
+            rankingList.sortRankingList();
+            fail("should have thrown exception");
+        } catch (IndexOutOfBoundsException e) {
+            fail("unexpected exception");
+        } catch (InvalidRankingListException e) {
+            // does nothing
+        }
+    }
+
+
+
 
 
     @Test
@@ -77,7 +120,11 @@ public class TestRankingList {
         rankingList.addRanking(oneRanking4);
         rankingList.addRanking(oneRanking5);
         assertEquals("Player5",rankingList.getHighestName());
+    }
 
+    @Test
+    public void getHighestNameEmptyTest() {
+        assertEquals("no highest score", rankingList.getHighestName());
     }
 
     @Test
@@ -89,6 +136,11 @@ public class TestRankingList {
         rankingList.addRanking(oneRanking5);
         assertEquals(30488,rankingList.getHighestScore());
 
+    }
+
+    @Test
+    public void getHighestScoreEmptyTest() {
+        assertEquals(0, rankingList.getHighestScore());
     }
 
 }

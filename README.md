@@ -45,3 +45,12 @@ the user to fill out the name. press confirm to save. User can continue the game
 * the game will automatically save progress if the user clicks X in the window.
 the saved progress can be loaded when launching the game next time.
 * press "w""s""a""d" or up/down/left/right to move tiles
+
+## Phase 4 - Task 2
+Test and design a class that is robust. 
+- robust classes include RankingList, Reader and Writer
+- RankingList robust methods: sortRankingList, getHighestName, getHighestScore
+- Reader robust methods: readMatrix, readRanking, readFile
+- Writer robust methods: Writer
+
+##

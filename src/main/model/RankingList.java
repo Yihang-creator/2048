@@ -19,35 +19,50 @@ public class RankingList implements Saveable {
         listOfScores      = new ArrayList<>();
     }
 
-    //REQUIRES: listOfPlayerNames and listOfScores are non-empty
+    //REQUIRES: listOfPlayerNames and listOfScores are non-empty and have equal numbers of elements in two lists
     //MODIFIES: this
     //EFFECTS: sort listOfScores from high to low, change listOfPlayerNames accordingly
-    public void sortRankingList() {
-        for (int i = 0; i < listOfScores.size() - 1; i++) {
-            for (int j = listOfScores.size() - 1; j > i; j--) {
-                if (listOfScores.get(j) > listOfScores.get(j - 1)) {
-                    int smallerNum = listOfScores.get(j - 1);
-                    listOfScores.set(j - 1, listOfScores.get(j));
-                    listOfScores.set(j, smallerNum);
-                    String smallerNumName = listOfPlayerNames.get(j - 1);
-                    listOfPlayerNames.set(j - 1, listOfPlayerNames.get(j));
-                    listOfPlayerNames.set(j, smallerNumName);
+    public void sortRankingList() throws InvalidRankingListException {
+        if (listOfScores.size() != listOfPlayerNames.size()) {
+            throw new InvalidRankingListException();
+        } else if (listOfScores.size() == 0) {
+            throw new IndexOutOfBoundsException();
+        } else {
+            for (int i = 0; i < listOfScores.size() - 1; i++) {
+                for (int j = listOfScores.size() - 1; j > i; j--) {
+                    if (listOfScores.get(j) > listOfScores.get(j - 1)) {
+                        int smallerNum = listOfScores.get(j - 1);
+                        listOfScores.set(j - 1, listOfScores.get(j));
+                        listOfScores.set(j, smallerNum);
+                        String smallerNumName = listOfPlayerNames.get(j - 1);
+                        listOfPlayerNames.set(j - 1, listOfPlayerNames.get(j));
+                        listOfPlayerNames.set(j, smallerNumName);
+                    }
                 }
             }
         }
 
     }
 
+    //REQUIRES: listOfPlayerNames and listOfScores are not empty
     //EFFECTS: return the name of the highest ranking
     public String getHighestName() {
-        sortRankingList();
-        return listOfPlayerNames.get(0);
+        try {
+            sortRankingList();
+            return listOfPlayerNames.get(0);
+        } catch (Exception e) {
+            return "no highest score";
+        }
     }
 
     //EFFECTS: return the score of the highest ranking
     public Integer getHighestScore() {
-        sortRankingList();
-        return listOfScores.get(0);
+        try {
+            sortRankingList();
+            return listOfScores.get(0);
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     //MODIFIES: this
@@ -71,6 +86,13 @@ public class RankingList implements Saveable {
 
     }
 
+    public void setListOfPlayerNames(List<String> listOfPlayerNames) {
+        this.listOfPlayerNames = listOfPlayerNames;
+    }
+
+    public void setListOfScores(List<Integer> listOfScores) {
+        this.listOfScores = listOfScores;
+    }
 
     @Override
     public void save(PrintWriter printWriter) {

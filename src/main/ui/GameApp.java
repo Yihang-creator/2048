@@ -1,8 +1,10 @@
 package ui;
 
 import model.Grid;
+import model.InvalidRankingListException;
 import model.OneRanking;
 import model.RankingList;
+import org.omg.CORBA.DynAnyPackage.Invalid;
 import persistence.Reader;
 import persistence.Writer;
 
@@ -342,6 +344,7 @@ public class GameApp extends JFrame {
                 String name = nameText.getText();
                 oneRanking.setName(name.substring(0, min(10, name.length())));
                 oneRanking.setScore(grid.getScore());
+
                 rankingList.addRanking(oneRanking);
                 newWindow.dispatchEvent(new WindowEvent(newWindow,WindowEvent.WINDOW_CLOSING));
                 newWindow.dispose();
@@ -433,7 +436,13 @@ public class GameApp extends JFrame {
     //MODIFIES: this
     //EFFECTS: sort the RankingList before the ranking is printed, print the ranking list and ask for next instruction
     private void printRankingListOption() {
-        rankingList.sortRankingList();
+        try {
+            rankingList.sortRankingList();
+        } catch (InvalidRankingListException e) {
+            rankingList = new RankingList(); // reset the rankingList
+        } catch (IndexOutOfBoundsException e) {
+            // does nothing
+        }
         printRankingList();
 //        System.out.println("enter 0 to start a new game, enter 2 to quit");
 //        command = new Scanner(System.in);
