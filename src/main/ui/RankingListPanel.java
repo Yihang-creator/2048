@@ -11,7 +11,7 @@ import java.util.List;
 public class RankingListPanel extends JPanel {
     private RankingList rankingList;
     int size;
-    private Font font = new Font("Times New Roman", Font.BOLD, 10);
+    private Font font = new Font("Times New Roman", Font.BOLD, 20);
     FontMetrics fontMetrics = getFontMetrics(font);
     // height of rectangles
     private int height = fontMetrics.getHeight() * 2;
@@ -41,15 +41,8 @@ public class RankingListPanel extends JPanel {
         List<String> listOfNames = rankingList.getListOfPlayerNames();
         g.setFont(font);
         g.setColor(Color.BLACK);
-
-
+        drawHeader(g);
         for (int i = 0; i < size; i++) {
-            // print the header for the grid
-            if (i == 0) {
-                g.drawString("Rank", 0, 0);
-                g.drawString("Name", widthOfRank, 0);
-                g.drawString("score",widthOfPlayer + widthOfRank, 0);
-            }
 
             String rank = Integer.toString(i + 1);
             String playerName = listOfNames.get(i).trim();
@@ -69,6 +62,17 @@ public class RankingListPanel extends JPanel {
         }
 
 
+    }
+
+    //EFFECTS: draw the header for the rankingList
+    private void drawHeader(Graphics g) {
+        // print the header for the grid
+        g.drawString("Rank", 0, height / 4 + fontMetrics.getAscent());
+        g.drawString("Name", widthOfRank, height / 4 + fontMetrics.getAscent());
+        g.drawString("score",widthOfPlayer + widthOfRank, height / 4 + fontMetrics.getAscent());
+        g.drawRect(0,0,widthOfRank,height);
+        g.drawRect(widthOfRank,0,widthOfPlayer,height);
+        g.drawRect(widthOfPlayer + widthOfRank, 0, widthOfScore,height);
     }
 
 }
